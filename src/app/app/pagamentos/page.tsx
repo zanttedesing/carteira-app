@@ -30,7 +30,7 @@ type Payment = {
 };
 
 const inputClass =
-  "rounded-lg border border-zinc-300 px-2 py-1 text-sm outline-none focus:border-zinc-900";
+  "rounded-lg border border-line px-2 py-1 text-sm outline-none focus:border-stamp";
 
 export default async function PagamentosPage(props: {
   searchParams: Promise<{ mes?: string }>;
@@ -90,21 +90,21 @@ export default async function PagamentosPage(props: {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-900">Pagamentos</h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h1 className="text-2xl font-semibold text-ink">Pagamentos</h1>
+          <p className="mt-1 text-sm text-ink-2">
             {fmtMesReferencia(mesReferencia)}
           </p>
         </div>
         <div className="flex gap-2">
           <Link
             href={`/app/pagamentos?mes=${shiftMesReferencia(mesReferencia, -1)}`}
-            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm hover:bg-zinc-100"
+            className="rounded-lg border border-line px-3 py-1.5 text-sm hover:bg-surface-2"
           >
             ← Mês anterior
           </Link>
           <Link
             href={`/app/pagamentos?mes=${shiftMesReferencia(mesReferencia, 1)}`}
-            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm hover:bg-zinc-100"
+            className="rounded-lg border border-line px-3 py-1.5 text-sm hover:bg-surface-2"
           >
             Próximo mês →
           </Link>
@@ -112,7 +112,7 @@ export default async function PagamentosPage(props: {
       </div>
 
       {tenantList.length === 0 && (
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-ink-2">
           Nenhum contrato ativo neste mês.
         </p>
       )}
@@ -136,25 +136,25 @@ export default async function PagamentosPage(props: {
           return (
             <div
               key={tenant.id}
-              className="rounded-xl border border-zinc-200 bg-white p-4"
+              className="rounded-xl border border-line bg-surface p-4"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="font-medium text-zinc-900">
+                <h3 className="font-medium text-ink">
                   {tenant.units?.properties?.endereco} — {tenant.units?.label}
-                  <span className="ml-2 font-normal text-zinc-500">
+                  <span className="ml-2 font-normal text-ink-2">
                     {nomeInquilino}
                   </span>
                 </h3>
-                <p className="text-sm font-medium text-zinc-900">
+                <p className="text-sm font-medium text-ink">
                   Total: {fmtMoney(calc.total)}
                 </p>
               </div>
 
-              <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm text-zinc-600">
+              <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm text-ink-2">
                 <span>Aluguel: {fmtMoney(tenant.valor_aluguel)}</span>
                 {calc.diasAtraso > 0 && (
                   <>
-                    <span className="text-amber-700">
+                    <span className="text-warn">
                       {calc.diasAtraso} dia(s) de atraso
                     </span>
                     <span>Multa: {fmtMoney(calc.multa)}</span>
@@ -176,7 +176,7 @@ export default async function PagamentosPage(props: {
                 <input type="hidden" name="tenant_id" value={tenant.id} />
                 <input type="hidden" name="mes_referencia" value={mesReferencia} />
 
-                <label className="flex flex-col gap-1 text-xs text-zinc-500">
+                <label className="flex flex-col gap-1 text-xs text-ink-2">
                   Data do pagamento
                   <input
                     name="data_pagamento"
@@ -186,7 +186,7 @@ export default async function PagamentosPage(props: {
                   />
                 </label>
 
-                <label className="flex items-center gap-1.5 pb-1.5 text-sm text-zinc-700">
+                <label className="flex items-center gap-1.5 pb-1.5 text-sm text-ink">
                   <input
                     type="checkbox"
                     name="luz_paga"
@@ -194,7 +194,7 @@ export default async function PagamentosPage(props: {
                   />
                   Luz paga
                 </label>
-                <label className="flex items-center gap-1.5 pb-1.5 text-sm text-zinc-700">
+                <label className="flex items-center gap-1.5 pb-1.5 text-sm text-ink">
                   <input
                     type="checkbox"
                     name="agua_paga"
@@ -203,7 +203,7 @@ export default async function PagamentosPage(props: {
                   Água paga
                 </label>
 
-                <label className="flex min-w-[160px] flex-1 flex-col gap-1 text-xs text-zinc-500">
+                <label className="flex min-w-[160px] flex-1 flex-col gap-1 text-xs text-ink-2">
                   Observações
                   <input
                     name="obs"
@@ -214,7 +214,7 @@ export default async function PagamentosPage(props: {
 
                 <button
                   type="submit"
-                  className="rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-700"
+                  className="rounded-lg bg-stamp px-3 py-1.5 text-sm font-medium text-stamp-ink hover:bg-stamp/90"
                 >
                   Salvar
                 </button>

@@ -36,8 +36,8 @@ type Unit = {
 };
 
 const inputClass =
-  "rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900";
-const labelClass = "flex flex-col gap-1 text-sm text-zinc-700";
+  "rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-stamp";
+const labelClass = "flex flex-col gap-1 text-sm text-ink";
 
 export default async function InquilinosPage() {
   const supabase = await createClient();
@@ -68,15 +68,15 @@ export default async function InquilinosPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900">Inquilinos</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <h1 className="text-2xl font-semibold text-ink">Inquilinos</h1>
+        <p className="mt-1 text-sm text-ink-2">
           Um contrato ativo por unidade. Cadastre o inquilino e os moradores da
           casa.
         </p>
       </div>
 
       {unitList.length === 0 && (
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-ink-2">
           Cadastre um imóvel e uma unidade primeiro, na aba Imóveis.
         </p>
       )}
@@ -87,9 +87,9 @@ export default async function InquilinosPage() {
           return (
             <div
               key={unit.id}
-              className="rounded-xl border border-zinc-200 bg-white p-4"
+              className="rounded-xl border border-line bg-surface p-4"
             >
-              <h3 className="font-medium text-zinc-900">
+              <h3 className="font-medium text-ink">
                 {unit.properties?.endereco} — {unit.label}
               </h3>
 
@@ -135,7 +135,7 @@ export default async function InquilinosPage() {
                     Fim do contrato
                     <input name="data_fim" type="date" className={inputClass} />
                   </label>
-                  <label className="mt-6 flex items-center gap-2 text-sm text-zinc-700">
+                  <label className="mt-6 flex items-center gap-2 text-sm text-ink">
                     <input type="checkbox" name="prazo_indeterminado" />
                     Prazo indeterminado (sem data de fim)
                   </label>
@@ -170,7 +170,7 @@ export default async function InquilinosPage() {
                       <option value="INPC">INPC</option>
                     </select>
                   </label>
-                  <label className="mt-6 flex items-center gap-2 text-sm text-zinc-700">
+                  <label className="mt-6 flex items-center gap-2 text-sm text-ink">
                     <input type="checkbox" name="contrato_assinado" />
                     Contrato assinado
                   </label>
@@ -185,7 +185,7 @@ export default async function InquilinosPage() {
                   <div className="col-span-full">
                     <button
                       type="submit"
-                      className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+                      className="rounded-lg bg-stamp px-4 py-2 text-sm font-medium text-stamp-ink hover:bg-stamp/90"
                     >
                       Criar contrato
                     </button>
@@ -193,55 +193,55 @@ export default async function InquilinosPage() {
                 </form>
               ) : (
                 <div className="mt-3 flex flex-col gap-4">
-                  <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-zinc-700 sm:grid-cols-4">
+                  <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-ink sm:grid-cols-4">
                     <p>
-                      <span className="text-zinc-400">Aluguel: </span>
+                      <span className="text-ink-3">Aluguel: </span>
                       {tenant.valor_aluguel.toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       })}
                     </p>
                     <p>
-                      <span className="text-zinc-400">Vencimento: </span>
+                      <span className="text-ink-3">Vencimento: </span>
                       dia {tenant.dia_vencimento}
                     </p>
                     <p>
-                      <span className="text-zinc-400">Início: </span>
+                      <span className="text-ink-3">Início: </span>
                       {fmtDate(tenant.data_inicio)}
                     </p>
                     <p>
-                      <span className="text-zinc-400">Fim: </span>
+                      <span className="text-ink-3">Fim: </span>
                       {tenant.prazo_indeterminado
                         ? "Prazo indeterminado"
                         : fmtDate(tenant.data_fim)}
                     </p>
                     <p>
-                      <span className="text-zinc-400">Multa: </span>
+                      <span className="text-ink-3">Multa: </span>
                       {tenant.multa_percent}%
                     </p>
                     <p>
-                      <span className="text-zinc-400">Juros: </span>
+                      <span className="text-ink-3">Juros: </span>
                       {tenant.juros_mes_percent}% a.m.
                     </p>
                     <p>
-                      <span className="text-zinc-400">Índice: </span>
+                      <span className="text-ink-3">Índice: </span>
                       {tenant.indice_correcao}
                     </p>
                     <p>
-                      <span className="text-zinc-400">Contrato: </span>
+                      <span className="text-ink-3">Contrato: </span>
                       {tenant.contrato_assinado ? "Assinado" : "Não assinado"}
                     </p>
                   </div>
 
                   <div>
-                    <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-400">
+                    <p className="mb-2 text-xs font-medium uppercase tracking-wide text-ink-3">
                       Moradores
                     </p>
                     <ul className="flex flex-col gap-1">
                       {tenant.moradores.map((m) => (
                         <li
                           key={m.id}
-                          className="flex items-center justify-between rounded-lg bg-zinc-50 px-3 py-1.5 text-sm text-zinc-700"
+                          className="flex items-center justify-between rounded-lg bg-surface-2 px-3 py-1.5 text-sm text-ink"
                         >
                           <span>
                             {m.nome}
@@ -251,7 +251,7 @@ export default async function InquilinosPage() {
                             <input type="hidden" name="id" value={m.id} />
                             <button
                               type="submit"
-                              className="text-xs text-red-600 hover:underline"
+                              className="text-xs text-danger hover:underline"
                             >
                               remover
                             </button>
@@ -259,7 +259,7 @@ export default async function InquilinosPage() {
                         </li>
                       ))}
                       {tenant.moradores.length === 0 && (
-                        <li className="text-sm text-zinc-400">
+                        <li className="text-sm text-ink-3">
                           Nenhum morador cadastrado.
                         </li>
                       )}
@@ -283,7 +283,7 @@ export default async function InquilinosPage() {
                       />
                       <button
                         type="submit"
-                        className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100"
+                        className="rounded-lg border border-line px-3 py-2 text-sm font-medium text-ink hover:bg-surface-2"
                       >
                         Adicionar morador
                       </button>
@@ -291,7 +291,7 @@ export default async function InquilinosPage() {
                   </div>
 
                   <div>
-                    <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-400">
+                    <p className="mb-2 text-xs font-medium uppercase tracking-wide text-ink-3">
                       Documentos
                     </p>
                     <ul className="flex flex-col gap-1">
@@ -300,14 +300,14 @@ export default async function InquilinosPage() {
                         return (
                           <li
                             key={doc.id}
-                            className="flex items-center justify-between rounded-lg bg-zinc-50 px-3 py-1.5 text-sm text-zinc-700"
+                            className="flex items-center justify-between rounded-lg bg-surface-2 px-3 py-1.5 text-sm text-ink"
                           >
                             {url ? (
                               <a
                                 href={url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-zinc-900 underline"
+                                className="text-ink underline"
                               >
                                 {doc.nome}
                               </a>
@@ -323,7 +323,7 @@ export default async function InquilinosPage() {
                               />
                               <button
                                 type="submit"
-                                className="text-xs text-red-600 hover:underline"
+                                className="text-xs text-danger hover:underline"
                               >
                                 remover
                               </button>
@@ -332,7 +332,7 @@ export default async function InquilinosPage() {
                         );
                       })}
                       {tenant.documents.length === 0 && (
-                        <li className="text-sm text-zinc-400">
+                        <li className="text-sm text-ink-3">
                           Nenhum documento enviado.
                         </li>
                       )}
@@ -347,11 +347,11 @@ export default async function InquilinosPage() {
                         name="file"
                         type="file"
                         required
-                        className="text-sm text-zinc-700"
+                        className="text-sm text-ink"
                       />
                       <button
                         type="submit"
-                        className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-100"
+                        className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface-2"
                       >
                         Enviar documento
                       </button>
@@ -362,7 +362,7 @@ export default async function InquilinosPage() {
                     <input type="hidden" name="id" value={tenant.id} />
                     <button
                       type="submit"
-                      className="text-xs text-red-600 hover:underline"
+                      className="text-xs text-danger hover:underline"
                     >
                       Encerrar contrato
                     </button>

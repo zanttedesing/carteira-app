@@ -36,7 +36,7 @@ type Unit = {
 };
 
 const inputClass =
-  "rounded-lg border border-zinc-300 px-2 py-1.5 text-sm outline-none focus:border-zinc-900";
+  "rounded-lg border border-line px-2 py-1.5 text-sm outline-none focus:border-stamp";
 const STATUS_OPCOES = ["Planejada", "Em andamento", "Concluída"];
 const ITEM_STATUS_OPCOES = ["Pendente", "Contratado", "Concluído"];
 
@@ -60,23 +60,23 @@ export default async function ManutencaoPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900">Manutenção</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <h1 className="text-2xl font-semibold text-ink">Manutenção</h1>
+        <p className="mt-1 text-sm text-ink-2">
           Reformas e reparos por unidade, com os itens e fornecedores de cada
           um.
         </p>
       </div>
 
       {unitList.length === 0 ? (
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-ink-2">
           Cadastre um imóvel e uma unidade primeiro, na aba Imóveis.
         </p>
       ) : (
         <form
           action={createMaintenance}
-          className="flex flex-wrap items-end gap-3 rounded-xl border border-zinc-200 bg-white p-4"
+          className="flex flex-wrap items-end gap-3 rounded-xl border border-line bg-surface p-4"
         >
-          <label className="flex flex-col gap-1 text-sm text-zinc-700">
+          <label className="flex flex-col gap-1 text-sm text-ink">
             Unidade
             <select name="unit_id" required className={inputClass}>
               {unitList.map((u) => (
@@ -86,11 +86,11 @@ export default async function ManutencaoPage() {
               ))}
             </select>
           </label>
-          <label className="flex min-w-[220px] flex-1 flex-col gap-1 text-sm text-zinc-700">
+          <label className="flex min-w-[220px] flex-1 flex-col gap-1 text-sm text-ink">
             Descrição
             <input name="descricao" required className={inputClass} />
           </label>
-          <label className="flex flex-col gap-1 text-sm text-zinc-700">
+          <label className="flex flex-col gap-1 text-sm text-ink">
             Data da solicitação
             <input
               name="data_solicitacao"
@@ -99,11 +99,11 @@ export default async function ManutencaoPage() {
               className={inputClass}
             />
           </label>
-          <label className="flex flex-col gap-1 text-sm text-zinc-700">
+          <label className="flex flex-col gap-1 text-sm text-ink">
             Previsão de término
             <input name="data_prevista_fim" type="date" className={inputClass} />
           </label>
-          <label className="flex flex-col gap-1 text-sm text-zinc-700">
+          <label className="flex flex-col gap-1 text-sm text-ink">
             Custo total (R$)
             <input
               name="custo"
@@ -116,7 +116,7 @@ export default async function ManutencaoPage() {
           </label>
           <button
             type="submit"
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+            className="rounded-lg bg-stamp px-4 py-2 text-sm font-medium text-stamp-ink hover:bg-stamp/90"
           >
             Criar
           </button>
@@ -127,12 +127,12 @@ export default async function ManutencaoPage() {
         {maintenanceList.map((m) => (
           <div
             key={m.id}
-            className="rounded-xl border border-zinc-200 bg-white p-4"
+            className="rounded-xl border border-line bg-surface p-4"
           >
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
-                <h3 className="font-medium text-zinc-900">{m.descricao}</h3>
-                <p className="text-xs text-zinc-500">
+                <h3 className="font-medium text-ink">{m.descricao}</h3>
+                <p className="text-xs text-ink-2">
                   {m.units?.properties?.endereco} — {m.units?.label}
                 </p>
               </div>
@@ -152,7 +152,7 @@ export default async function ManutencaoPage() {
                   </select>
                   <button
                     type="submit"
-                    className="rounded-lg border border-zinc-300 px-2 py-1.5 text-xs font-medium hover:bg-zinc-100"
+                    className="rounded-lg border border-line px-2 py-1.5 text-xs font-medium hover:bg-surface-2"
                   >
                     Atualizar
                   </button>
@@ -161,7 +161,7 @@ export default async function ManutencaoPage() {
                   <input type="hidden" name="id" value={m.id} />
                   <button
                     type="submit"
-                    className="text-xs text-red-600 hover:underline"
+                    className="text-xs text-danger hover:underline"
                   >
                     excluir
                   </button>
@@ -169,21 +169,21 @@ export default async function ManutencaoPage() {
               </div>
             </div>
 
-            <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm text-zinc-600">
+            <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm text-ink-2">
               <span>Solicitada em: {fmtDate(m.data_solicitacao)}</span>
               <span>Previsão: {fmtDate(m.data_prevista_fim)}</span>
               <span>Custo total: {fmtMoney(m.custo)}</span>
             </div>
 
             <div className="mt-3">
-              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-400">
+              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-ink-3">
                 Itens / fornecedores
               </p>
               <ul className="flex flex-col gap-1">
                 {m.maintenance_items.map((item) => (
                   <li
                     key={item.id}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-zinc-50 px-3 py-1.5 text-sm text-zinc-700"
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-surface-2 px-3 py-1.5 text-sm text-ink"
                   >
                     <span>
                       {item.tipo}
@@ -197,7 +197,7 @@ export default async function ManutencaoPage() {
                         <select
                           name="status"
                           defaultValue={item.status}
-                          className="rounded border border-zinc-300 px-1.5 py-1 text-xs"
+                          className="rounded border border-line px-1.5 py-1 text-xs"
                         >
                           {ITEM_STATUS_OPCOES.map((s) => (
                             <option key={s} value={s}>
@@ -207,7 +207,7 @@ export default async function ManutencaoPage() {
                         </select>
                         <button
                           type="submit"
-                          className="text-xs text-zinc-500 hover:underline"
+                          className="text-xs text-ink-2 hover:underline"
                         >
                           ok
                         </button>
@@ -216,7 +216,7 @@ export default async function ManutencaoPage() {
                         <input type="hidden" name="id" value={item.id} />
                         <button
                           type="submit"
-                          className="text-xs text-red-600 hover:underline"
+                          className="text-xs text-danger hover:underline"
                         >
                           remover
                         </button>
@@ -225,7 +225,7 @@ export default async function ManutencaoPage() {
                   </li>
                 ))}
                 {m.maintenance_items.length === 0 && (
-                  <li className="text-sm text-zinc-400">
+                  <li className="text-sm text-ink-3">
                     Nenhum item cadastrado.
                   </li>
                 )}
@@ -255,7 +255,7 @@ export default async function ManutencaoPage() {
                 />
                 <button
                   type="submit"
-                  className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-100"
+                  className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface-2"
                 >
                   Adicionar item
                 </button>
@@ -264,7 +264,7 @@ export default async function ManutencaoPage() {
           </div>
         ))}
         {maintenanceList.length === 0 && (
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-ink-2">
             Nenhuma manutenção cadastrada ainda.
           </p>
         )}

@@ -5,11 +5,6 @@ import { ReceiptDemo, RentCalculator } from "./LandingInteractive";
 export default function Home() {
   return (
     <div className="landing">
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Special+Elite&display=swap"
-      />
-
       <nav className="nav">
         <div className="wrap">
           <span className="mark">

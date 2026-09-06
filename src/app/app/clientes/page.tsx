@@ -46,7 +46,7 @@ type Repasse = {
 };
 
 const inputClass =
-  "rounded-lg border border-zinc-300 px-2 py-1.5 text-sm outline-none focus:border-zinc-900";
+  "rounded-lg border border-line px-2 py-1.5 text-sm outline-none focus:border-stamp";
 
 export default async function ClientesPage(props: {
   searchParams: Promise<{ mes?: string }>;
@@ -70,8 +70,8 @@ export default async function ClientesPage(props: {
   if (account?.modo !== "profissional") {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900">Clientes</h1>
-        <p className="mt-2 text-sm text-zinc-500">
+        <h1 className="text-2xl font-semibold text-ink">Clientes</h1>
+        <p className="mt-2 text-sm text-ink-2">
           Essa área é só para quem administra imóveis de terceiros. Ative o
           modo profissional em Configurações para usá-la.
         </p>
@@ -137,21 +137,21 @@ export default async function ClientesPage(props: {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-900">Clientes</h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h1 className="text-2xl font-semibold text-ink">Clientes</h1>
+          <p className="mt-1 text-sm text-ink-2">
             Comissão e repasse de {fmtMesReferencia(mesReferencia).toLowerCase()}.
           </p>
         </div>
         <div className="flex gap-2">
           <Link
             href={`/app/clientes?mes=${shiftMesReferencia(mesReferencia, -1)}`}
-            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm hover:bg-zinc-100"
+            className="rounded-lg border border-line px-3 py-1.5 text-sm hover:bg-surface-2"
           >
             ← Mês anterior
           </Link>
           <Link
             href={`/app/clientes?mes=${shiftMesReferencia(mesReferencia, 1)}`}
-            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm hover:bg-zinc-100"
+            className="rounded-lg border border-line px-3 py-1.5 text-sm hover:bg-surface-2"
           >
             Próximo mês →
           </Link>
@@ -160,23 +160,23 @@ export default async function ClientesPage(props: {
 
       <form
         action={addCliente}
-        className="flex flex-wrap items-end gap-3 rounded-xl border border-zinc-200 bg-white p-4"
+        className="flex flex-wrap items-end gap-3 rounded-xl border border-line bg-surface p-4"
       >
-        <label className="flex flex-col gap-1 text-sm text-zinc-700">
+        <label className="flex flex-col gap-1 text-sm text-ink">
           Nome
           <input name="nome" required className={inputClass} />
         </label>
-        <label className="flex flex-col gap-1 text-sm text-zinc-700">
+        <label className="flex flex-col gap-1 text-sm text-ink">
           Telefone
           <input name="telefone" className={inputClass} />
         </label>
-        <label className="flex flex-col gap-1 text-sm text-zinc-700">
+        <label className="flex flex-col gap-1 text-sm text-ink">
           E-mail
           <input name="email" type="email" className={inputClass} />
         </label>
         <button
           type="submit"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+          className="rounded-lg bg-stamp px-4 py-2 text-sm font-medium text-stamp-ink hover:bg-stamp/90"
         >
           Adicionar cliente
         </button>
@@ -217,12 +217,12 @@ export default async function ClientesPage(props: {
           return (
             <div
               key={cliente.id}
-              className="rounded-xl border border-zinc-200 bg-white p-4"
+              className="rounded-xl border border-line bg-surface p-4"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-medium text-zinc-900">{cliente.nome}</h3>
-                  <p className="text-xs text-zinc-500">
+                  <h3 className="font-medium text-ink">{cliente.nome}</h3>
+                  <p className="text-xs text-ink-2">
                     {propsDoCliente.length} imóve
                     {propsDoCliente.length === 1 ? "l" : "is"}
                     {cliente.telefone ? ` · ${cliente.telefone}` : ""}
@@ -232,17 +232,17 @@ export default async function ClientesPage(props: {
                   <input type="hidden" name="id" value={cliente.id} />
                   <button
                     type="submit"
-                    className="text-xs text-red-600 hover:underline"
+                    className="text-xs text-danger hover:underline"
                   >
                     excluir
                   </button>
                 </form>
               </div>
 
-              <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-zinc-600">
+              <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-ink-2">
                 <span>Recebido no mês: {fmtMoney(recebido)}</span>
                 <span>Comissão: {fmtMoney(comissao)}</span>
-                <span className="font-medium text-zinc-900">
+                <span className="font-medium text-ink">
                   Líquido a repassar: {fmtMoney(liquido)}
                 </span>
               </div>
@@ -253,7 +253,7 @@ export default async function ClientesPage(props: {
               >
                 <input type="hidden" name="client_id" value={cliente.id} />
                 <input type="hidden" name="mes_referencia" value={mesReferencia} />
-                <label className="flex flex-col gap-1 text-xs text-zinc-500">
+                <label className="flex flex-col gap-1 text-xs text-ink-2">
                   Data do repasse
                   <input
                     name="data_repasse"
@@ -262,7 +262,7 @@ export default async function ClientesPage(props: {
                     className={inputClass}
                   />
                 </label>
-                <label className="flex flex-col gap-1 text-xs text-zinc-500">
+                <label className="flex flex-col gap-1 text-xs text-ink-2">
                   Valor repassado (R$)
                   <input
                     name="valor"
@@ -272,7 +272,7 @@ export default async function ClientesPage(props: {
                     className={inputClass}
                   />
                 </label>
-                <label className="flex min-w-[160px] flex-1 flex-col gap-1 text-xs text-zinc-500">
+                <label className="flex min-w-[160px] flex-1 flex-col gap-1 text-xs text-ink-2">
                   Observações
                   <input
                     name="obs"
@@ -282,13 +282,13 @@ export default async function ClientesPage(props: {
                 </label>
                 <button
                   type="submit"
-                  className="rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-700"
+                  className="rounded-lg bg-stamp px-3 py-1.5 text-sm font-medium text-stamp-ink hover:bg-stamp/90"
                 >
                   Salvar repasse
                 </button>
               </form>
               {repasse?.data_repasse && (
-                <p className="mt-1 text-xs text-zinc-400">
+                <p className="mt-1 text-xs text-ink-3">
                   Último repasse registrado em {fmtDate(repasse.data_repasse)}.
                 </p>
               )}
@@ -296,7 +296,7 @@ export default async function ClientesPage(props: {
           );
         })}
         {clienteList.length === 0 && (
-          <p className="text-sm text-zinc-500">Nenhum cliente cadastrado ainda.</p>
+          <p className="text-sm text-ink-2">Nenhum cliente cadastrado ainda.</p>
         )}
       </div>
     </div>

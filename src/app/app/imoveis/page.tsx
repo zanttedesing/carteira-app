@@ -36,8 +36,8 @@ export default async function ImoveisPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900">Imóveis</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <h1 className="text-2xl font-semibold text-ink">Imóveis</h1>
+        <p className="mt-1 text-sm text-ink-2">
           Cadastre os imóveis e as unidades dentro de cada um (casas têm 1
           unidade; prédios podem ter várias).
         </p>
@@ -45,25 +45,25 @@ export default async function ImoveisPage() {
 
       <form
         action={createProperty}
-        className="flex flex-wrap items-end gap-3 rounded-xl border border-zinc-200 bg-white p-4"
+        className="flex flex-wrap items-end gap-3 rounded-xl border border-line bg-surface p-4"
       >
-        <label className="flex min-w-[240px] flex-1 flex-col gap-1 text-sm text-zinc-700">
+        <label className="flex min-w-[240px] flex-1 flex-col gap-1 text-sm text-ink">
           Endereço
           <input
             name="endereco"
             required
             placeholder="Rua Exemplo, 123"
-            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
+            className="rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-stamp"
           />
         </label>
 
         {isProfissional && (
           <>
-            <label className="flex flex-col gap-1 text-sm text-zinc-700">
+            <label className="flex flex-col gap-1 text-sm text-ink">
               Cliente dono do imóvel
               <select
                 name="client_id"
-                className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
+                className="rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-stamp"
               >
                 <option value="">Imóvel próprio</option>
                 {(clients ?? []).map((c) => (
@@ -73,7 +73,7 @@ export default async function ImoveisPage() {
                 ))}
               </select>
             </label>
-            <label className="flex flex-col gap-1 text-sm text-zinc-700">
+            <label className="flex flex-col gap-1 text-sm text-ink">
               Comissão (%)
               <input
                 name="comissao_percent"
@@ -81,7 +81,7 @@ export default async function ImoveisPage() {
                 step="0.01"
                 min="0"
                 defaultValue="0"
-                className="w-28 rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
+                className="w-28 rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-stamp"
               />
             </label>
           </>
@@ -89,14 +89,14 @@ export default async function ImoveisPage() {
 
         <button
           type="submit"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+          className="rounded-lg bg-stamp px-4 py-2 text-sm font-medium text-stamp-ink hover:bg-stamp/90"
         >
           Adicionar imóvel
         </button>
       </form>
 
       {propertyList.length === 0 && (
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-ink-2">
           Nenhum imóvel cadastrado ainda.
         </p>
       )}
@@ -105,13 +105,13 @@ export default async function ImoveisPage() {
         {propertyList.map((p) => (
           <div
             key={p.id}
-            className="rounded-xl border border-zinc-200 bg-white p-4"
+            className="rounded-xl border border-line bg-surface p-4"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="font-medium text-zinc-900">{p.endereco}</h3>
+                <h3 className="font-medium text-ink">{p.endereco}</h3>
                 {isProfissional && (
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-ink-2">
                     Comissão: {p.comissao_percent}%
                   </p>
                 )}
@@ -120,7 +120,7 @@ export default async function ImoveisPage() {
                 <input type="hidden" name="id" value={p.id} />
                 <button
                   type="submit"
-                  className="text-xs text-red-600 hover:underline"
+                  className="text-xs text-danger hover:underline"
                 >
                   Excluir imóvel
                 </button>
@@ -131,14 +131,14 @@ export default async function ImoveisPage() {
               {p.units.map((u) => (
                 <li
                   key={u.id}
-                  className="flex items-center justify-between rounded-lg bg-zinc-50 px-3 py-1.5 text-sm text-zinc-700"
+                  className="flex items-center justify-between rounded-lg bg-surface-2 px-3 py-1.5 text-sm text-ink"
                 >
                   {u.label}
                   <form action={deleteUnit}>
                     <input type="hidden" name="id" value={u.id} />
                     <button
                       type="submit"
-                      className="text-xs text-red-600 hover:underline"
+                      className="text-xs text-danger hover:underline"
                     >
                       remover
                     </button>
@@ -146,7 +146,7 @@ export default async function ImoveisPage() {
                 </li>
               ))}
               {p.units.length === 0 && (
-                <li className="text-sm text-zinc-400">Sem unidades ainda.</li>
+                <li className="text-sm text-ink-3">Sem unidades ainda.</li>
               )}
             </ul>
 
@@ -156,11 +156,11 @@ export default async function ImoveisPage() {
                 name="label"
                 required
                 placeholder="Nome da unidade (ex: Apto 101, Casa dos fundos)"
-                className="flex-1 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm outline-none focus:border-zinc-900"
+                className="flex-1 rounded-lg border border-line px-3 py-1.5 text-sm outline-none focus:border-stamp"
               />
               <button
                 type="submit"
-                className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-100"
+                className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface-2"
               >
                 Adicionar unidade
               </button>

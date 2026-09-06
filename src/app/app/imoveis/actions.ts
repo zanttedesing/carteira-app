@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { requireAccountId } from "@/lib/account";
+import { geocodeAddress } from "@/lib/geocode";
 import { revalidatePath } from "next/cache";
 
 export async function createProperty(formData: FormData) {
@@ -14,14 +15,31 @@ export async function createProperty(formData: FormData) {
   const supabase = await createClient();
   const accountId = await requireAccountId(supabase);
 
-  await supabase.from("properties").insert({
-    account_id: accountId,
-    endereco,
-    comissao_percent: comissaoPercent,
-    client_id: clientId,
-  });
+  const { data: property } = await supabase
+    .from("properties")
+    .insert({
+      account_id: accountId,
+      endereco,
+      comissao_percent: comissaoPercent,
+      client_id: clientId,
+    })
+    .select("id")
+    .single();
+
+  // Localiza o endereço no mapa em segundo plano (melhor esforço: se não
+  // achar, o imóvel já foi criado normalmente, só fica sem coordenadas).
+  if (property) {
+    const local = await geocodeAddress(endereco);
+    if (local) {
+      await supabase
+        .from("properties")
+        .update({ latitude: local.lat, longitude: local.lon })
+        .eq("id", property.id);
+    }
+  }
 
   revalidatePath("/app/imoveis");
+  revalidatePath("/app");
 }
 
 export async function deleteProperty(formData: FormData) {

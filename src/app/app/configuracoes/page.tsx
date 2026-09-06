@@ -24,26 +24,26 @@ export default async function ConfiguracoesPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900">Configurações</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <h1 className="text-2xl font-semibold text-ink">Configurações</h1>
+        <p className="mt-1 text-sm text-ink-2">
           Dados da sua carteira e do seu acesso.
         </p>
       </div>
 
-      <div className="rounded-xl border border-zinc-200 bg-white p-4">
-        <h3 className="font-medium text-zinc-900">Conta</h3>
-        <p className="mt-1 text-sm text-zinc-600">{account?.nome}</p>
-        <p className="text-sm text-zinc-500">{user?.email}</p>
+      <div className="rounded-xl border border-line bg-surface p-4">
+        <h3 className="font-medium text-ink">Conta</h3>
+        <p className="mt-1 text-sm text-ink-2">{account?.nome}</p>
+        <p className="text-sm text-ink-2">{user?.email}</p>
       </div>
 
-      <div className="rounded-xl border border-zinc-200 bg-white p-4">
-        <h3 className="font-medium text-zinc-900">Como você usa a carteira?</h3>
-        <p className="mt-1 text-sm text-zinc-500">
+      <div className="rounded-xl border border-line bg-surface p-4">
+        <h3 className="font-medium text-ink">Como você usa a carteira?</h3>
+        <p className="mt-1 text-sm text-ink-2">
           No modo profissional aparece a aba Clientes, com comissão de
           administração e repasse de cada imóvel de terceiros.
         </p>
         <form action={setModo} className="mt-3 flex flex-col gap-2">
-          <label className="flex items-center gap-2 rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-700">
+          <label className="flex items-center gap-2 rounded-lg border border-line px-3 py-2 text-sm text-ink">
             <input
               type="radio"
               name="modo"
@@ -52,7 +52,7 @@ export default async function ConfiguracoesPage() {
             />
             Imóveis próprios e da família
           </label>
-          <label className="flex items-center gap-2 rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-700">
+          <label className="flex items-center gap-2 rounded-lg border border-line px-3 py-2 text-sm text-ink">
             <input
               type="radio"
               name="modo"
@@ -63,24 +63,24 @@ export default async function ConfiguracoesPage() {
           </label>
           <button
             type="submit"
-            className="mt-2 w-fit rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+            className="mt-2 w-fit rounded-lg bg-stamp px-4 py-2 text-sm font-medium text-stamp-ink hover:bg-stamp/90"
           >
             Salvar
           </button>
         </form>
       </div>
 
-      <div className="rounded-xl border border-zinc-200 bg-white p-4">
-        <h3 className="font-medium text-zinc-900">Quem tem acesso</h3>
+      <div className="rounded-xl border border-line bg-surface p-4">
+        <h3 className="font-medium text-ink">Quem tem acesso</h3>
         <ul className="mt-2 flex flex-col gap-1">
           {(membros ?? []).map((m) => (
-            <li key={m.id} className="text-sm text-zinc-600">
+            <li key={m.id} className="text-sm text-ink-2">
               {m.nome}
             </li>
           ))}
         </ul>
 
-        <p className="mt-4 text-sm text-zinc-500">
+        <p className="mt-4 text-sm text-ink-2">
           Para dar acesso a mais uma pessoa (sócio, familiar, funcionário),
           mande este link para ela. Ao criar a conta por esse link, ela entra
           direto na mesma carteira que você.
@@ -89,7 +89,7 @@ export default async function ConfiguracoesPage() {
           <input
             readOnly
             value={linkConvite}
-            className="flex-1 rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm text-zinc-600"
+            className="flex-1 rounded-lg border border-line bg-surface-2 px-3 py-2 text-sm text-ink-2"
           />
         </div>
       </div>
