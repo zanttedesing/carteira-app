@@ -78,7 +78,11 @@ export default async function ManutencaoPage() {
         >
           <label className="flex flex-col gap-1 text-sm text-ink">
             Unidade
-            <select name="unit_id" required className={inputClass}>
+            <select
+              name="unit_id"
+              required
+              className={`${inputClass} bg-surface text-ink`}
+            >
               {unitList.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.properties?.endereco} — {u.label}
@@ -142,7 +146,7 @@ export default async function ManutencaoPage() {
                   <select
                     name="status"
                     defaultValue={m.status}
-                    className={inputClass}
+                    className={`${inputClass} bg-surface text-ink`}
                   >
                     {STATUS_OPCOES.map((s) => (
                       <option key={s} value={s}>
@@ -197,7 +201,7 @@ export default async function ManutencaoPage() {
                         <select
                           name="status"
                           defaultValue={item.status}
-                          className="rounded border border-line px-1.5 py-1 text-xs"
+                          className="rounded border border-line bg-surface px-1.5 py-1 text-xs text-ink"
                         >
                           {ITEM_STATUS_OPCOES.map((s) => (
                             <option key={s} value={s}>

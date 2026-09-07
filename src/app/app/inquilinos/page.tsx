@@ -31,7 +31,7 @@ type Tenant = {
 type Unit = {
   id: string;
   label: string;
-  properties: { endereco: string } | null;
+  properties: { endereco: string; clients: { nome: string } | null } | null;
   tenants: Tenant[];
 };
 
@@ -41,15 +41,19 @@ const labelClass = "flex flex-col gap-1 text-sm text-ink";
 
 export default async function InquilinosPage() {
   const supabase = await createClient();
-  await requireAccountId(supabase);
+  const accountId = await requireAccountId(supabase);
 
-  const { data: units } = await supabase
-    .from("units")
-    .select(
-      "id, label, properties(endereco), tenants(id, valor_aluguel, dia_vencimento, data_inicio, data_fim, prazo_indeterminado, multa_percent, juros_mes_percent, indice_correcao, contrato_assinado, obs_contrato, ativo, moradores(id, nome, telefone, email), documents(id, nome, storage_path))"
-    )
-    .order("label");
+  const [{ data: units }, { data: account }] = await Promise.all([
+    supabase
+      .from("units")
+      .select(
+        "id, label, properties(endereco, clients(nome)), tenants(id, valor_aluguel, dia_vencimento, data_inicio, data_fim, prazo_indeterminado, multa_percent, juros_mes_percent, indice_correcao, contrato_assinado, obs_contrato, ativo, moradores(id, nome, telefone, email), documents(id, nome, storage_path))"
+      )
+      .order("label"),
+    supabase.from("accounts").select("modo").eq("id", accountId).single(),
+  ]);
 
+  const isProfissional = account?.modo === "profissional";
   const unitList = (units ?? []) as unknown as Unit[];
 
   const allDocuments = unitList.flatMap((u) =>
@@ -89,9 +93,24 @@ export default async function InquilinosPage() {
               key={unit.id}
               className="rounded-xl border border-line bg-surface p-4"
             >
-              <h3 className="font-medium text-ink">
-                {unit.properties?.endereco} — {unit.label}
-              </h3>
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="font-medium text-ink">
+                  {unit.properties?.endereco} — {unit.label}
+                </h3>
+                {isProfissional && (
+                  <span
+                    className={
+                      unit.properties?.clients
+                        ? "rounded-full bg-stamp-soft px-2 py-0.5 text-xs font-medium text-stamp"
+                        : "rounded-full bg-surface-2 px-2 py-0.5 text-xs font-medium text-ink-2"
+                    }
+                  >
+                    {unit.properties?.clients
+                      ? `Cliente: ${unit.properties.clients.nome}`
+                      : "Imóvel próprio"}
+                  </span>
+                )}
+              </div>
 
               {!tenant ? (
                 <form
@@ -163,7 +182,10 @@ export default async function InquilinosPage() {
                   </label>
                   <label className={labelClass}>
                     Índice de correção
-                    <select name="indice_correcao" className={inputClass}>
+                    <select
+                      name="indice_correcao"
+                      className={`${inputClass} bg-surface text-ink`}
+                    >
                       <option value="Nenhum">Nenhum</option>
                       <option value="IPCA">IPCA</option>
                       <option value="IGP-M">IGP-M</option>

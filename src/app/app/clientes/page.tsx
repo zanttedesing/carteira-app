@@ -21,8 +21,9 @@ type Tenant = {
   ativo: boolean;
   data_inicio: string;
   data_fim: string | null;
+  moradores: { nome: string }[];
 };
-type Unit = { id: string; tenants: Tenant[] };
+type Unit = { id: string; label: string; tenants: Tenant[] };
 type Property = {
   id: string;
   endereco: string;
@@ -85,7 +86,7 @@ export default async function ClientesPage(props: {
       supabase
         .from("properties")
         .select(
-          "id, endereco, comissao_percent, client_id, units(id, tenants(id, valor_aluguel, dia_vencimento, multa_percent, juros_mes_percent, indice_correcao, ativo, data_inicio, data_fim))"
+          "id, endereco, comissao_percent, client_id, units(id, label, tenants(id, valor_aluguel, dia_vencimento, multa_percent, juros_mes_percent, indice_correcao, ativo, data_inicio, data_fim, moradores(nome)))"
         )
         .not("client_id", "is", null),
       supabase
@@ -190,12 +191,22 @@ export default async function ClientesPage(props: {
 
           let recebido = 0;
           let comissao = 0;
+          type Detalhe = {
+            key: string;
+            endereco: string;
+            unidade: string;
+            morador: string;
+            diaVencimento: number;
+            status: string;
+            statusTipo: "ok" | "atraso" | "aberto";
+          };
+          const detalhes: Detalhe[] = [];
+
           for (const property of propsDoCliente) {
             for (const unit of property.units) {
               for (const tenant of unit.tenants) {
                 if (!tenantAtivoNoMes(tenant)) continue;
                 const payment = paymentByTenant.get(tenant.id);
-                if (!payment?.data_pagamento) continue;
                 const indiceValor =
                   tenant.indice_correcao !== "Nenhum"
                     ? indiceValores.get(tenant.indice_correcao) ?? null
@@ -203,16 +214,42 @@ export default async function ClientesPage(props: {
                 const calc = calcPayment(
                   tenant,
                   mesReferencia,
-                  payment.data_pagamento,
+                  payment?.data_pagamento ?? null,
                   indiceValor
                 );
-                recebido += calc.total;
-                comissao += calc.total * (property.comissao_percent / 100);
+
+                if (payment?.data_pagamento) {
+                  recebido += calc.total;
+                  comissao += calc.total * (property.comissao_percent / 100);
+                }
+
+                detalhes.push({
+                  key: tenant.id,
+                  endereco: property.endereco,
+                  unidade: unit.label,
+                  morador: tenant.moradores[0]?.nome ?? "Sem morador cadastrado",
+                  diaVencimento: tenant.dia_vencimento,
+                  statusTipo: payment?.data_pagamento
+                    ? "ok"
+                    : calc.diasAtraso > 0
+                      ? "atraso"
+                      : "aberto",
+                  status: payment?.data_pagamento
+                    ? `Pago em ${fmtDate(payment.data_pagamento)}`
+                    : calc.diasAtraso > 0
+                      ? `Atrasado (${calc.diasAtraso}d) — vence dia ${tenant.dia_vencimento}`
+                      : `Em aberto — vence dia ${tenant.dia_vencimento}`,
+                });
               }
             }
           }
           const liquido = recebido - comissao;
           const repasse = repasseByClient.get(cliente.id);
+          const statusStyle: Record<Detalhe["statusTipo"], string> = {
+            ok: "bg-stamp-soft text-stamp",
+            atraso: "bg-danger-soft text-danger",
+            aberto: "bg-warn-soft text-warn",
+          };
 
           return (
             <div
@@ -245,6 +282,32 @@ export default async function ClientesPage(props: {
                 <span className="font-medium text-ink">
                   Líquido a repassar: {fmtMoney(liquido)}
                 </span>
+              </div>
+
+              <div className="mt-3 flex flex-col gap-1.5">
+                {detalhes.map((d) => (
+                  <div
+                    key={d.key}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-surface-2 px-3 py-1.5 text-sm text-ink"
+                  >
+                    <span>
+                      {d.endereco} — {d.unidade}
+                      <span className="ml-2 font-normal text-ink-2">
+                        {d.morador}
+                      </span>
+                    </span>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusStyle[d.statusTipo]}`}
+                    >
+                      {d.status}
+                    </span>
+                  </div>
+                ))}
+                {detalhes.length === 0 && (
+                  <p className="text-sm text-ink-3">
+                    Nenhum contrato ativo neste mês.
+                  </p>
+                )}
               </div>
 
               <form

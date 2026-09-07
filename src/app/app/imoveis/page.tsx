@@ -13,6 +13,7 @@ type Property = {
   endereco: string;
   comissao_percent: number;
   client_id: string | null;
+  clients: { nome: string } | null;
   units: Unit[];
 };
 
@@ -24,7 +25,9 @@ export default async function ImoveisPage() {
     await Promise.all([
       supabase
         .from("properties")
-        .select("id, endereco, comissao_percent, client_id, units(id, label)")
+        .select(
+          "id, endereco, comissao_percent, client_id, clients(nome), units(id, label)"
+        )
         .order("created_at", { ascending: false }),
       supabase.from("clients").select("id, nome").order("nome"),
       supabase.from("accounts").select("modo").eq("id", accountId).single(),
@@ -63,7 +66,7 @@ export default async function ImoveisPage() {
               Cliente dono do imóvel
               <select
                 name="client_id"
-                className="rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-stamp"
+                className="rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-stamp"
               >
                 <option value="">Imóvel próprio</option>
                 {(clients ?? []).map((c) => (
@@ -109,7 +112,20 @@ export default async function ImoveisPage() {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="font-medium text-ink">{p.endereco}</h3>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="font-medium text-ink">{p.endereco}</h3>
+                  {isProfissional && (
+                    <span
+                      className={
+                        p.clients
+                          ? "rounded-full bg-stamp-soft px-2 py-0.5 text-xs font-medium text-stamp"
+                          : "rounded-full bg-surface-2 px-2 py-0.5 text-xs font-medium text-ink-2"
+                      }
+                    >
+                      {p.clients ? `Cliente: ${p.clients.nome}` : "Imóvel próprio"}
+                    </span>
+                  )}
+                </div>
                 {isProfissional && (
                   <p className="text-xs text-ink-2">
                     Comissão: {p.comissao_percent}%

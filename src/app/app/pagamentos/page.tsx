@@ -17,7 +17,13 @@ type Tenant = {
   multa_percent: number;
   juros_mes_percent: number;
   indice_correcao: string;
-  units: { label: string; properties: { endereco: string } | null } | null;
+  units: {
+    label: string;
+    properties: {
+      endereco: string;
+      clients: { nome: string } | null;
+    } | null;
+  } | null;
   moradores: { nome: string }[];
 };
 
@@ -43,17 +49,21 @@ export default async function PagamentosPage(props: {
   const mesFim = `${mesReferencia}-${String(ultimoDia).padStart(2, "0")}`;
 
   const supabase = await createClient();
-  await requireAccountId(supabase);
+  const accountId = await requireAccountId(supabase);
 
-  const { data: tenants } = await supabase
-    .from("tenants")
-    .select(
-      "id, valor_aluguel, dia_vencimento, multa_percent, juros_mes_percent, indice_correcao, units(label, properties(endereco)), moradores(nome)"
-    )
-    .eq("ativo", true)
-    .lte("data_inicio", mesFim)
-    .or(`data_fim.is.null,data_fim.gte.${mesInicio}`);
+  const [{ data: tenants }, { data: account }] = await Promise.all([
+    supabase
+      .from("tenants")
+      .select(
+        "id, valor_aluguel, dia_vencimento, multa_percent, juros_mes_percent, indice_correcao, units(label, properties(endereco, clients(nome))), moradores(nome)"
+      )
+      .eq("ativo", true)
+      .lte("data_inicio", mesFim)
+      .or(`data_fim.is.null,data_fim.gte.${mesInicio}`),
+    supabase.from("accounts").select("modo").eq("id", accountId).single(),
+  ]);
 
+  const isProfissional = account?.modo === "profissional";
   const tenantList = (tenants ?? []) as unknown as Tenant[];
 
   const { data: payments } = await supabase
@@ -139,12 +149,27 @@ export default async function PagamentosPage(props: {
               className="rounded-xl border border-line bg-surface p-4"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="font-medium text-ink">
-                  {tenant.units?.properties?.endereco} — {tenant.units?.label}
-                  <span className="ml-2 font-normal text-ink-2">
-                    {nomeInquilino}
-                  </span>
-                </h3>
+                <div>
+                  <h3 className="font-medium text-ink">
+                    {tenant.units?.properties?.endereco} — {tenant.units?.label}
+                    <span className="ml-2 font-normal text-ink-2">
+                      {nomeInquilino}
+                    </span>
+                  </h3>
+                  {isProfissional && (
+                    <span
+                      className={
+                        tenant.units?.properties?.clients
+                          ? "mt-1 inline-block rounded-full bg-stamp-soft px-2 py-0.5 text-xs font-medium text-stamp"
+                          : "mt-1 inline-block rounded-full bg-surface-2 px-2 py-0.5 text-xs font-medium text-ink-2"
+                      }
+                    >
+                      {tenant.units?.properties?.clients
+                        ? `Cliente: ${tenant.units.properties.clients.nome}`
+                        : "Imóvel próprio"}
+                    </span>
+                  )}
+                </div>
                 <p className="text-sm font-medium text-ink">
                   Total: {fmtMoney(calc.total)}
                 </p>
