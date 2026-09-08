@@ -251,6 +251,24 @@ export default async function ClientesPage(props: {
             aberto: "bg-warn-soft text-warn",
           };
 
+          const enderecoOrder: string[] = [];
+          const enderecoMap = new Map<string, Detalhe[]>();
+          for (const d of detalhes) {
+            const key = d.endereco.trim().toLowerCase();
+            if (!enderecoMap.has(key)) {
+              enderecoMap.set(key, []);
+              enderecoOrder.push(key);
+            }
+            enderecoMap.get(key)!.push(d);
+          }
+          const enderecoGroups = enderecoOrder.map((key) => ({
+            endereco: enderecoMap.get(key)![0].endereco,
+            detalhes: enderecoMap.get(key)!,
+          }));
+          const totalEnderecos = new Set(
+            propsDoCliente.map((p) => p.endereco.trim().toLowerCase())
+          ).size;
+
           return (
             <div
               key={cliente.id}
@@ -260,8 +278,7 @@ export default async function ClientesPage(props: {
                 <div>
                   <h3 className="font-medium text-ink">{cliente.nome}</h3>
                   <p className="text-xs text-ink-2">
-                    {propsDoCliente.length} imóve
-                    {propsDoCliente.length === 1 ? "l" : "is"}
+                    {totalEnderecos} endereço{totalEnderecos === 1 ? "" : "s"}
                     {cliente.telefone ? ` · ${cliente.telefone}` : ""}
                   </p>
                 </div>
@@ -284,23 +301,35 @@ export default async function ClientesPage(props: {
                 </span>
               </div>
 
-              <div className="mt-3 flex flex-col gap-1.5">
-                {detalhes.map((d) => (
+              <div className="mt-3 flex flex-col gap-2">
+                {enderecoGroups.map((group) => (
                   <div
-                    key={d.key}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-surface-2 px-3 py-1.5 text-sm text-ink"
+                    key={group.endereco.toLowerCase()}
+                    className="rounded-lg bg-surface-2 p-2"
                   >
-                    <span>
-                      {d.endereco} — {d.unidade}
-                      <span className="ml-2 font-normal text-ink-2">
-                        {d.morador}
-                      </span>
-                    </span>
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusStyle[d.statusTipo]}`}
-                    >
-                      {d.status}
-                    </span>
+                    <p className="px-1 pb-1 text-xs font-medium uppercase tracking-wide text-ink-3">
+                      {group.endereco}
+                    </p>
+                    <div className="flex flex-col gap-1">
+                      {group.detalhes.map((d) => (
+                        <div
+                          key={d.key}
+                          className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-surface px-3 py-1.5 text-sm text-ink"
+                        >
+                          <span>
+                            {d.unidade}
+                            <span className="ml-2 font-normal text-ink-2">
+                              {d.morador}
+                            </span>
+                          </span>
+                          <span
+                            className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusStyle[d.statusTipo]}`}
+                          >
+                            {d.status}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
                 {detalhes.length === 0 && (

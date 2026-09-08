@@ -56,6 +56,21 @@ export default async function InquilinosPage() {
   const isProfissional = account?.modo === "profissional";
   const unitList = (units ?? []) as unknown as Unit[];
 
+  const groupOrder: string[] = [];
+  const groupMap = new Map<string, Unit[]>();
+  for (const u of unitList) {
+    const key = (u.properties?.endereco ?? "").trim().toLowerCase();
+    if (!groupMap.has(key)) {
+      groupMap.set(key, []);
+      groupOrder.push(key);
+    }
+    groupMap.get(key)!.push(u);
+  }
+  const addressGroups = groupOrder.map((key) => {
+    const group = groupMap.get(key)!;
+    return { endereco: group[0].properties?.endereco ?? "", units: group };
+  });
+
   const allDocuments = unitList.flatMap((u) =>
     u.tenants.flatMap((t) => t.documents)
   );
@@ -86,31 +101,48 @@ export default async function InquilinosPage() {
       )}
 
       <div className="flex flex-col gap-4">
-        {unitList.map((unit) => {
-          const tenant = unit.tenants.find((t) => t.ativo);
-          return (
-            <div
-              key={unit.id}
-              className="rounded-xl border border-line bg-surface p-4"
-            >
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="font-medium text-ink">
-                  {unit.properties?.endereco} — {unit.label}
-                </h3>
-                {isProfissional && (
-                  <span
-                    className={
-                      unit.properties?.clients
-                        ? "rounded-full bg-stamp-soft px-2 py-0.5 text-xs font-medium text-stamp"
-                        : "rounded-full bg-surface-2 px-2 py-0.5 text-xs font-medium text-ink-2"
-                    }
-                  >
-                    {unit.properties?.clients
-                      ? `Cliente: ${unit.properties.clients.nome}`
-                      : "Imóvel próprio"}
-                  </span>
-                )}
+        {addressGroups.map((group) => (
+          <details
+            key={group.endereco.toLowerCase()}
+            open
+            className="group rounded-xl border border-line bg-surface"
+          >
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 marker:content-none">
+              <div className="flex items-center gap-2">
+                <span className="text-ink-3 transition-transform group-open:rotate-90">
+                  ▸
+                </span>
+                <h3 className="font-medium text-ink">{group.endereco}</h3>
               </div>
+              <span className="text-xs text-ink-2">
+                {group.units.length} casa{group.units.length === 1 ? "" : "s"}
+              </span>
+            </summary>
+
+            <div className="flex flex-col gap-4 border-t border-line px-4 py-3">
+              {group.units.map((unit) => {
+                const tenant = unit.tenants.find((t) => t.ativo);
+                return (
+                  <div
+                    key={unit.id}
+                    className="rounded-lg bg-surface-2 p-3"
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h4 className="font-medium text-ink">{unit.label}</h4>
+                      {isProfissional && (
+                        <span
+                          className={
+                            unit.properties?.clients
+                              ? "rounded-full bg-stamp-soft px-2 py-0.5 text-xs font-medium text-stamp"
+                              : "rounded-full bg-surface px-2 py-0.5 text-xs font-medium text-ink-2"
+                          }
+                        >
+                          {unit.properties?.clients
+                            ? `Cliente: ${unit.properties.clients.nome}`
+                            : "Imóvel próprio"}
+                        </span>
+                      )}
+                    </div>
 
               {!tenant ? (
                 <form
@@ -391,9 +423,12 @@ export default async function InquilinosPage() {
                   </form>
                 </div>
               )}
+                  </div>
+                );
+              })}
             </div>
-          );
-        })}
+          </details>
+        ))}
       </div>
     </div>
   );
