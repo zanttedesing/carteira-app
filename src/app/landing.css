@@ -1,18 +1,32 @@
-/* Tokens compartilhados (--paper, --ink, --stamp etc.) vêm de globals.css.
-   Aqui só ficam as cores extras específicas da landing (carbon copy). */
-:root {
+/* A área logada (globals.css) usa um dashboard escuro com acento
+   verde-menta. A landing de vendas mantém sua própria identidade (recibo
+   em carbono, tons de papel) fixando aqui os mesmos nomes de token com
+   os valores originais — não herda a paleta escura do produto. */
+.landing {
+  --paper: #f2eee2;
+  --surface: #fbf9f1;
+  --surface-2: #ece6d4;
+  --line: #cfc2a0;
+  --ink: #221e19;
+  --ink-2: #5b5646;
+  --ink-3: #8f886f;
+  --stamp: #2e5c3e;
+  --stamp-ink: #f2eee2;
+  --stamp-soft: #dce6dc;
+  --ok: #2e5c3e;
+  --ok-soft: #dce6dc;
+  --warn: #9c6e22;
+  --warn-soft: #efe1be;
+  --danger: #a5432e;
+  --danger-soft: #f0dad1;
+  --shadow: rgba(34, 30, 25, 0.14);
+  --chrome-bg: #221e19;
+  --chrome-fg: #f2eee2;
+  --chrome-fg-muted: #a89d84;
+  --chrome-line: rgba(242, 238, 226, 0.1);
   --carbon-pink: #de9ba3;
   --carbon-blue: #8c9bb8;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --carbon-pink: #b97781;
-    --carbon-blue: #6c7c99;
-  }
-}
-:root[data-theme="dark"] {
-  --carbon-pink: #b97781;
-  --carbon-blue: #6c7c99;
+  color-scheme: light;
 }
 
 .landing * { box-sizing: border-box; }

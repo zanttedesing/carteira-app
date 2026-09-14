@@ -1,73 +1,31 @@
 @import "tailwindcss";
 
+/* Identidade do produto (área logada + login): dashboard escuro,
+   acento verde-menta. A landing page de vendas fixa sua própria paleta
+   (recibo em carbono) em landing.css, por cima destes valores. */
 :root {
-  --paper: #f2eee2;
-  --surface: #fbf9f1;
-  --surface-2: #ece6d4;
-  --line: #cfc2a0;
-  --ink: #221e19;
-  --ink-2: #5b5646;
-  --ink-3: #8f886f;
-  --stamp: #2e5c3e;
-  --stamp-ink: #f2eee2;
-  --stamp-soft: #dce6dc;
-  --ok: #2e5c3e;
-  --ok-soft: #dce6dc;
-  --warn: #9c6e22;
-  --warn-soft: #efe1be;
-  --danger: #a5432e;
-  --danger-soft: #f0dad1;
-  --shadow: rgba(34, 30, 25, 0.14);
-  /* "Chrome": a barra de navegação/lateral é sempre escura, tipo uma capa
-     de talão, e não deve inverter com o tema claro/escuro do sistema. */
-  --chrome-bg: #221e19;
-  --chrome-fg: #f2eee2;
-  --chrome-fg-muted: #a89d84;
-  --chrome-line: rgba(242, 238, 226, 0.1);
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #1c1913;
-    --surface: #252017;
-    --surface-2: #2c271b;
-    --line: #463f2e;
-    --ink: #ece6d5;
-    --ink-2: #b3aa90;
-    --ink-3: #847a61;
-    --stamp: #7fbe96;
-    --stamp-ink: #12211a;
-    --stamp-soft: #233a2c;
-    --ok: #7fbe96;
-    --ok-soft: #233a2c;
-    --warn: #d9ae5c;
-    --warn-soft: #3a2f16;
-    --danger: #d68469;
-    --danger-soft: #3b241c;
-    --shadow: rgba(0, 0, 0, 0.4);
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme="dark"] {
-  --paper: #1c1913;
-  --surface: #252017;
-  --surface-2: #2c271b;
-  --line: #463f2e;
-  --ink: #ece6d5;
-  --ink-2: #b3aa90;
-  --ink-3: #847a61;
-  --stamp: #7fbe96;
-  --stamp-ink: #12211a;
-  --stamp-soft: #233a2c;
-  --ok: #7fbe96;
-  --ok-soft: #233a2c;
-  --warn: #d9ae5c;
-  --warn-soft: #3a2f16;
-  --danger: #d68469;
-  --danger-soft: #3b241c;
-  --shadow: rgba(0, 0, 0, 0.4);
+  --paper: #0c1110;
+  --surface: #141b19;
+  --surface-2: #1a2321;
+  --line: #232e2a;
+  --ink: #f2f6f4;
+  --ink-2: #93a39c;
+  --ink-3: #61706a;
+  --stamp: #34d399;
+  --stamp-ink: #06231a;
+  --stamp-soft: #16332a;
+  --ok: #34d399;
+  --ok-soft: #16332a;
+  --warn: #f2b545;
+  --warn-soft: #392e15;
+  --danger: #f2685c;
+  --danger-soft: #3a1f1c;
+  --shadow: rgba(0, 0, 0, 0.55);
+  /* "Chrome": a barra lateral, ligeiramente mais escura que o fundo. */
+  --chrome-bg: #0a0e0d;
+  --chrome-fg: #f2f6f4;
+  --chrome-fg-muted: #6b7975;
+  --chrome-line: rgba(242, 246, 244, 0.06);
   color-scheme: dark;
 }
 
@@ -92,7 +50,7 @@
   --color-chrome-fg: var(--chrome-fg);
   --color-chrome-fg-muted: var(--chrome-fg-muted);
   --color-chrome-line: var(--chrome-line);
-  --font-sans: var(--font-karla);
+  --font-sans: var(--font-inter);
   --font-serif: var(--font-fraunces);
   --font-mono: var(--font-plex-mono);
 }
@@ -108,12 +66,12 @@ html, body {
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-karla), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3 {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
   font-weight: 600;
   text-wrap: balance;
 }
