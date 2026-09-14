@@ -1,16 +1,35 @@
 import Link from "next/link";
 import "./landing.css";
-import { ReceiptDemo, RentCalculator } from "./LandingInteractive";
+import { DashboardPreview, RentCalculator } from "./LandingInteractive";
+import {
+  HomeIcon,
+  BuildingIcon,
+  UsersIcon,
+  WalletIcon,
+  WrenchIcon,
+} from "@/components/icons";
+
+function LogoLockup() {
+  return (
+    <span className="logo-lockup">
+      <span className="logo-mark">
+        <HomeIcon className="h-5 w-5" />
+      </span>
+      <span className="logo-text">
+        Carteira
+        <br />
+        <b>de Aluguel</b>
+      </span>
+    </span>
+  );
+}
 
 export default function Home() {
   return (
     <div className="landing">
       <nav className="nav">
         <div className="wrap">
-          <span className="mark">
-            Carteira
-            <span className="type">gestão de aluguéis</span>
-          </span>
+          <LogoLockup />
           <Link className="cta" href="/signup">
             Criar conta
           </Link>
@@ -20,6 +39,13 @@ export default function Home() {
       <header className="hero">
         <div className="wrap">
           <div>
+            <span className="badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="2.5" y="4" width="19" height="13" rx="1.5" />
+                <path d="M8 21h8M12 17v4" />
+              </svg>
+              Sistema web
+            </span>
             <span className="eyebrow">Para administradoras e corretores de aluguel</span>
             <h1>
               Cada cliente, sua carteira de imóveis — <em>organizada de verdade</em>.
@@ -38,32 +64,40 @@ export default function Home() {
                 Ver como funciona
               </a>
             </div>
-            <ul className="trust">
+            <ul className="quick-features">
               <li>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
-                  <path d="M20 6 9 17l-5-5" />
-                </svg>
-                Acesso pelo celular ou computador
+                <span className="qf-icon">
+                  <BuildingIcon className="h-4 w-4" />
+                </span>
+                <span className="label">Imóveis e contratos</span>
               </li>
               <li>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
-                  <path d="M20 6 9 17l-5-5" />
-                </svg>
-                Dados sempre sincronizados
+                <span className="qf-icon">
+                  <UsersIcon className="h-4 w-4" />
+                </span>
+                <span className="label">Inquilinos e clientes</span>
               </li>
               <li>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
-                  <path d="M20 6 9 17l-5-5" />
-                </svg>
-                Cada carteira só é vista por você
+                <span className="qf-icon">
+                  <WalletIcon className="h-4 w-4" />
+                </span>
+                <span className="label">Repasses e pagamentos</span>
+              </li>
+              <li>
+                <span className="qf-icon">
+                  <WrenchIcon className="h-4 w-4" />
+                </span>
+                <span className="label">Reformas e manutenções</span>
               </li>
             </ul>
           </div>
-          <ReceiptDemo />
+          <div className="device">
+            <DashboardPreview />
+          </div>
         </div>
       </header>
 
-      <div className="tear" />
+      <div className="divider" />
 
       <main>
         <section className="pad" id="recursos">
@@ -160,7 +194,7 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="tear" />
+        <div className="divider" />
 
         <section className="pad" id="calculadora">
           <div className="wrap">
@@ -173,7 +207,7 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="tear" />
+        <div className="divider" />
 
         <section className="pad">
           <div className="wrap">
@@ -248,12 +282,12 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="tear" />
+        <div className="divider" />
 
         <section className="pad" id="contato">
           <div className="wrap">
             <div className="cta-band">
-              <span className="stamp-mark">Pronto pra usar</span>
+              <span className="badge">Pronto pra usar</span>
               <h2>Administra aluguel de clientes? Comece a organizar sua carteira agora.</h2>
               <p>Grátis pra começar — administradoras, corretores e quem cuida do aluguel da própria família.</p>
               <div className="actions">
@@ -267,7 +301,7 @@ export default function Home() {
 
       <footer>
         <div className="wrap">
-          <span className="mark">Carteira</span>
+          <LogoLockup />
           <span className="fine">Gestão de aluguéis, contratos e repasses.</span>
         </div>
       </footer>

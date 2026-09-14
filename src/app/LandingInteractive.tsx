@@ -1,135 +1,131 @@
 "use client";
 
 import { useState } from "react";
+import {
+  HomeIcon,
+  BuildingIcon,
+  WalletIcon,
+  UsersIcon,
+  FileTextIcon,
+  AlertTriangleIcon,
+  CheckCircleIcon,
+} from "@/components/icons";
 
 function brl(v: number) {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-export function ReceiptDemo() {
-  const [tab, setTab] = useState<"pagamentos" | "reformas" | "donos">("pagamentos");
+const NAV_ICONS = [HomeIcon, BuildingIcon, FileTextIcon, WalletIcon, UsersIcon];
 
+const VENCIMENTOS = [
+  { casa: "Casa 01 — Centro", inquilino: "João Silva", valor: 1200, atrasado: false },
+  { casa: "Apartamento 02 — Jardim", inquilino: "Maria Souza", valor: 950, atrasado: false },
+  { casa: "Casa 03 — Vila Nova", inquilino: "Renata Lima", valor: 2800, atrasado: true },
+];
+
+const BARS = [40, 55, 48, 62, 58, 78];
+
+export function DashboardPreview() {
   return (
-    <div className="receipt-stack">
-      <div className="receipt copy blue" />
-      <div className="receipt copy pink" />
-      <div className="receipt top">
-        <div className="rhead">
-          <div>
-            <div className="brand">Carteira</div>
-            <span className="no">recibo digital · via administrador</span>
+    <div className="device-frame">
+      <div className="device-dots">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="flex gap-2 rounded-xl border border-line bg-surface p-2.5">
+        <div className="hidden w-11 shrink-0 flex-col items-center gap-2 rounded-lg bg-chrome py-3 sm:flex">
+          {NAV_ICONS.map((Icon, i) => (
+            <span
+              key={i}
+              className={
+                i === 0
+                  ? "flex h-7 w-7 items-center justify-center rounded-md bg-stamp-soft text-stamp"
+                  : "flex h-7 w-7 items-center justify-center rounded-md text-chrome-fg-muted"
+              }
+            >
+              <Icon className="h-4 w-4" />
+            </span>
+          ))}
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col gap-2.5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[13px] font-semibold text-ink">
+                Olá, bem-vindo(a)!
+              </p>
+              <p className="text-[10px] text-ink-2">Resumo da sua carteira</p>
+            </div>
+            <span className="rounded-full border border-line bg-surface-2 px-2 py-1 text-[9px] text-ink-2">
+              Hoje, 12 de Set
+            </span>
           </div>
-          <span className="no">01/09/2026</span>
-        </div>
-        <div className="rtabs">
-          <button
-            className={`receipt-tab${tab === "pagamentos" ? " active" : ""}`}
-            type="button"
-            onClick={() => setTab("pagamentos")}
-          >
-            Pagamentos
-          </button>
-          <button
-            className={`receipt-tab${tab === "reformas" ? " active" : ""}`}
-            type="button"
-            onClick={() => setTab("reformas")}
-          >
-            Reformas
-          </button>
-          <button
-            className={`receipt-tab${tab === "donos" ? " active" : ""}`}
-            type="button"
-            onClick={() => setTab("donos")}
-          >
-            Clientes
-          </button>
-        </div>
-        <div className="rbody">
-          {tab === "pagamentos" && (
-            <div className="receipt-panel">
-              <div className="row">
-                <div className="stat">
-                  <div className="l">Previsto no mês</div>
-                  <div className="v">R$ 7.400</div>
-                </div>
-                <div className="stat">
-                  <div className="l">Em atraso</div>
-                  <div className="v" style={{ color: "var(--danger)" }}>R$ 543</div>
-                </div>
-                <div className="stat">
-                  <div className="l">Obras abertas</div>
-                  <div className="v">2</div>
-                </div>
+
+          <div className="grid grid-cols-4 gap-1.5">
+            <div className="rounded-lg border border-line bg-surface-2 p-1.5">
+              <BuildingIcon className="h-3 w-3 text-stamp" />
+              <p className="mt-1 text-[13px] font-bold text-ink">12</p>
+              <p className="text-[8px] text-ink-3">Imóveis</p>
+            </div>
+            <div className="rounded-lg border border-line bg-surface-2 p-1.5">
+              <FileTextIcon className="h-3 w-3 text-stamp" />
+              <p className="mt-1 text-[13px] font-bold text-ink">10</p>
+              <p className="text-[8px] text-ink-3">Contratos</p>
+            </div>
+            <div className="rounded-lg border border-line bg-surface-2 p-1.5">
+              <CheckCircleIcon className="h-3 w-3 text-stamp" />
+              <p className="mt-1 text-[13px] font-bold text-ink">8</p>
+              <p className="text-[8px] text-ink-3">Em dia</p>
+            </div>
+            <div className="rounded-lg border border-danger/30 bg-surface-2 p-1.5">
+              <AlertTriangleIcon className="h-3 w-3 text-danger" />
+              <p className="mt-1 text-[13px] font-bold text-danger">2</p>
+              <p className="text-[8px] text-ink-3">Atraso</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-5 gap-2">
+            <div className="col-span-3 rounded-lg border border-line bg-surface-2 p-2">
+              <p className="mb-1 text-[9px] font-semibold text-ink-2">
+                Próximos vencimentos
+              </p>
+              <div className="flex flex-col gap-1">
+                {VENCIMENTOS.map((v) => (
+                  <div
+                    key={v.casa}
+                    className="flex items-center justify-between gap-1 text-[8.5px]"
+                  >
+                    <span className="truncate text-ink-2">
+                      {v.casa} · {v.inquilino}
+                    </span>
+                    <span
+                      className={
+                        v.atrasado
+                          ? "shrink-0 font-semibold text-danger"
+                          : "shrink-0 font-semibold text-ink"
+                      }
+                    >
+                      {brl(v.valor)}
+                    </span>
+                  </div>
+                ))}
               </div>
-              <table>
-                <tbody>
-                  <tr>
-                    <td>Casa 1 — R. das Palmeiras</td>
-                    <td><b>João Silva</b></td>
-                    <td><span className="pill ok">Pago em dia</span></td>
-                  </tr>
-                  <tr>
-                    <td>Casa 2 — R. das Palmeiras</td>
-                    <td><b>M. Souza &amp; A. Costa</b></td>
-                    <td><span className="pill danger">Atrasado (12d)</span></td>
-                  </tr>
-                  <tr>
-                    <td>Sítio Bela Vista</td>
-                    <td><b>Renata Lima</b></td>
-                    <td><span className="pill warn">A vencer</span></td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
-          )}
-          {tab === "reformas" && (
-            <div className="receipt-panel">
-              <div className="row" style={{ gridTemplateColumns: "1fr 1fr" }}>
-                <div className="stat">
-                  <div className="l">Obras abertas</div>
-                  <div className="v">2</div>
-                </div>
-                <div className="stat">
-                  <div className="l">Custo pendente</div>
-                  <div className="v">R$ 2.160</div>
-                </div>
+            <div className="col-span-2 rounded-lg border border-line bg-surface-2 p-2">
+              <p className="text-[9px] font-semibold text-ink-2">Receita</p>
+              <p className="text-[12px] font-bold text-ink">R$ 12.480</p>
+              <div className="mt-1.5 flex h-8 items-end gap-1">
+                {BARS.map((h, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 rounded-t-sm bg-stamp/70"
+                    style={{ height: `${h}%` }}
+                  />
+                ))}
               </div>
-              <table>
-                <tbody>
-                  <tr>
-                    <td>Casa 2 — Telhado</td>
-                    <td><span className="pill warn">Em andamento</span></td>
-                    <td className="num">R$ 2.160</td>
-                  </tr>
-                  <tr>
-                    <td>Sítio — Cerca nova</td>
-                    <td><span className="pill neutral">Planejada</span></td>
-                    <td className="num">R$ 640</td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
-          )}
-          {tab === "donos" && (
-            <div className="receipt-panel">
-              <table>
-                <tbody>
-                  <tr>
-                    <td><b>Marcos Reis</b> <span className="no">(10 imóveis)</span></td>
-                    <td className="num">R$ 9.400</td>
-                  </tr>
-                  <tr>
-                    <td><b>Imobiliária Vitale</b> <span className="no">(2 imóveis)</span></td>
-                    <td className="num">R$ 2.600</td>
-                  </tr>
-                  <tr>
-                    <td><b>Renata Lima</b> <span className="no">(1 imóvel)</span></td>
-                    <td className="num">R$ 1.600</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
