@@ -61,6 +61,13 @@ export default async function LoginPage(props: {
             </Link>
           </p>
         </div>
+
+        <p className="mt-4 text-center text-xs text-ink-3">
+          Deu algum problema?{" "}
+          <Link href="/ajuda" className="underline hover:text-ink-2">
+            Fale com a gente
+          </Link>
+        </p>
       </div>
 
       <p className="text-xs text-ink-3">

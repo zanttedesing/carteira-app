@@ -151,3 +151,22 @@ export function MoreIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function HelpCircleIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M9.3 9.3a2.7 2.7 0 1 1 3.9 2.4c-.8.4-1.2.9-1.2 1.8v.3" />
+      <circle cx="12" cy="16.8" r="0.15" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function MailIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base}>
+      <rect x="3.5" y="5" width="17" height="14" rx="1.5" />
+      <path d="m4.5 6.5 7.5 6 7.5-6" />
+    </svg>
+  );
+}

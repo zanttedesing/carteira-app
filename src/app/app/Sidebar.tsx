@@ -12,6 +12,7 @@ import {
   UsersIcon,
   SettingsIcon,
   LogOutIcon,
+  HelpCircleIcon,
 } from "@/components/icons";
 
 export type NavItem = { href: string; label: string };
@@ -77,15 +78,24 @@ export function Sidebar({
         })}
       </nav>
 
-      <form action={onLogout}>
-        <button
-          type="submit"
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-chrome-fg-muted transition-colors hover:bg-chrome-line hover:text-chrome-fg"
+      <div className="flex flex-col gap-1 border-t border-chrome-line pt-3">
+        <Link
+          href="/ajuda"
+          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-chrome-fg-muted transition-colors hover:bg-chrome-line hover:text-chrome-fg"
         >
-          <LogOutIcon className="h-[18px] w-[18px]" />
-          Sair
-        </button>
-      </form>
+          <HelpCircleIcon className="h-[18px] w-[18px]" />
+          Ajuda
+        </Link>
+        <form action={onLogout}>
+          <button
+            type="submit"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-chrome-fg-muted transition-colors hover:bg-chrome-line hover:text-chrome-fg"
+          >
+            <LogOutIcon className="h-[18px] w-[18px]" />
+            Sair
+          </button>
+        </form>
+      </div>
     </aside>
   );
 }

@@ -15,6 +15,7 @@ import {
   UsersIcon,
   SettingsIcon,
   LogOutIcon,
+  HelpCircleIcon,
 } from "@/components/icons";
 import type { NavItem } from "./Sidebar";
 
@@ -67,6 +68,14 @@ export function MobileNav({
               </Link>
             );
           })}
+          <Link
+            href="/ajuda"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-ink hover:bg-surface-2"
+          >
+            <HelpCircleIcon className="h-[18px] w-[18px] text-ink-2" />
+            Ajuda
+          </Link>
           <form action={onLogout}>
             <button
               type="submit"
