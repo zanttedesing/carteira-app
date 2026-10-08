@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { SERVICO_FORA_DO_AR, isServicoForaDoAr } from "@/lib/auth-errors";
 import { redirect } from "next/navigation";
 
 export async function login(formData: FormData) {
@@ -14,7 +15,10 @@ export async function login(formData: FormData) {
   });
 
   if (error) {
-    redirect("/login?erro=" + encodeURIComponent("E-mail ou senha incorretos."));
+    const mensagem = isServicoForaDoAr(error)
+      ? SERVICO_FORA_DO_AR
+      : "E-mail ou senha incorretos.";
+    redirect("/login?erro=" + encodeURIComponent(mensagem));
   }
 
   redirect("/app");

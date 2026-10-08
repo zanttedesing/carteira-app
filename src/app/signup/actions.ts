@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/account";
+import { SERVICO_FORA_DO_AR, isServicoForaDoAr } from "@/lib/auth-errors";
 import { redirect } from "next/navigation";
 
 export async function signup(formData: FormData) {
@@ -24,7 +25,10 @@ export async function signup(formData: FormData) {
   });
 
   if (signUpError) {
-    redirect("/signup?erro=" + encodeURIComponent(signUpError.message));
+    const mensagem = isServicoForaDoAr(signUpError)
+      ? SERVICO_FORA_DO_AR
+      : signUpError.message;
+    redirect("/signup?erro=" + encodeURIComponent(mensagem));
   }
 
   if (!signUpData.user) {
