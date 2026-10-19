@@ -8,7 +8,9 @@ import {
   fmtMesReferencia,
   fmtMoney,
 } from "@/lib/calc";
-import { savePayment } from "./actions";
+import { savePayment, registerComprovante, removeComprovante } from "./actions";
+import { DirectUpload } from "@/components/DirectUpload";
+import { ConfirmButton } from "@/components/ConfirmButton";
 
 type Tenant = {
   id: string;
@@ -21,6 +23,7 @@ type Tenant = {
     label: string;
     properties: {
       endereco: string;
+      client_id: string | null;
       clients: { nome: string } | null;
     } | null;
   } | null;
@@ -33,16 +36,18 @@ type Payment = {
   luz_paga: boolean;
   agua_paga: boolean;
   obs: string | null;
+  comprovante_path: string | null;
 };
 
 const inputClass =
   "rounded-lg border border-line px-2 py-1 text-sm outline-none focus:border-stamp";
 
 export default async function PagamentosPage(props: {
-  searchParams: Promise<{ mes?: string }>;
+  searchParams: Promise<{ mes?: string; cliente?: string }>;
 }) {
   const params = await props.searchParams;
   const mesReferencia = params.mes || currentMesReferencia();
+  const filtroCliente = params.cliente || "";
   const mesInicio = `${mesReferencia}-01`;
   const [ano, mes] = mesReferencia.split("-").map(Number);
   const ultimoDia = new Date(ano, mes, 0).getDate();
@@ -51,20 +56,27 @@ export default async function PagamentosPage(props: {
   const supabase = await createClient();
   const accountId = await requireAccountId(supabase);
 
-  const [{ data: tenants }, { data: account }] = await Promise.all([
+  const [{ data: tenants }, { data: account }, { data: clients }] = await Promise.all([
     supabase
       .from("tenants")
       .select(
-        "id, valor_aluguel, dia_vencimento, multa_percent, juros_mes_percent, indice_correcao, units(label, properties(endereco, clients(nome))), moradores(nome)"
+        "id, valor_aluguel, dia_vencimento, multa_percent, juros_mes_percent, indice_correcao, units(label, properties(endereco, client_id, clients(nome))), moradores(nome)"
       )
       .eq("ativo", true)
       .lte("data_inicio", mesFim)
       .or(`data_fim.is.null,data_fim.gte.${mesInicio}`),
     supabase.from("accounts").select("modo").eq("id", accountId).single(),
+    supabase.from("clients").select("id, nome").order("nome"),
   ]);
 
   const isProfissional = account?.modo === "profissional";
-  const tenantList = (tenants ?? []) as unknown as Tenant[];
+  const tenantList = ((tenants ?? []) as unknown as Tenant[]).filter((t) => {
+    if (!isProfissional || !filtroCliente) return true;
+    const dono = t.units?.properties?.client_id ?? null;
+    return filtroCliente === "proprio" ? dono === null : dono === filtroCliente;
+  });
+  const qs = (mes: string) =>
+    `/app/pagamentos?mes=${mes}${filtroCliente ? `&cliente=${filtroCliente}` : ""}`;
 
   const groupOrder: string[] = [];
   const groupMap = new Map<string, Tenant[]>();
@@ -86,13 +98,25 @@ export default async function PagamentosPage(props: {
 
   const { data: payments } = await supabase
     .from("payments")
-    .select("tenant_id, data_pagamento, luz_paga, agua_paga, obs")
+    .select("tenant_id, data_pagamento, luz_paga, agua_paga, obs, comprovante_path")
     .eq("mes_referencia", mesReferencia);
 
   const paymentByTenant = new Map<string, Payment>();
   for (const p of (payments ?? []) as Payment[]) {
     paymentByTenant.set(p.tenant_id, p);
   }
+
+  const comprovanteUrls = new Map<string, string>();
+  await Promise.all(
+    Array.from(paymentByTenant.values())
+      .filter((pg) => pg.comprovante_path)
+      .map(async (pg) => {
+        const { data } = await supabase.storage
+          .from("documents")
+          .createSignedUrl(pg.comprovante_path!, 60 * 60);
+        if (data?.signedUrl) comprovanteUrls.set(pg.tenant_id, data.signedUrl);
+      })
+  );
 
   const indicesNecessarios = Array.from(
     new Set(
@@ -125,19 +149,41 @@ export default async function PagamentosPage(props: {
         </div>
         <div className="flex gap-2">
           <Link
-            href={`/app/pagamentos?mes=${shiftMesReferencia(mesReferencia, -1)}`}
+            href={qs(shiftMesReferencia(mesReferencia, -1))}
             className="rounded-lg border border-line px-3 py-1.5 text-sm hover:bg-surface-2"
           >
             ← Mês anterior
           </Link>
           <Link
-            href={`/app/pagamentos?mes=${shiftMesReferencia(mesReferencia, 1)}`}
+            href={qs(shiftMesReferencia(mesReferencia, 1))}
             className="rounded-lg border border-line px-3 py-1.5 text-sm hover:bg-surface-2"
           >
             Próximo mês →
           </Link>
         </div>
       </div>
+
+      {isProfissional && (clients ?? []).length > 0 && (
+        <div className="flex flex-wrap gap-2 text-sm">
+          {[
+            { id: "", nome: "Todos" },
+            { id: "proprio", nome: "Imóvel próprio" },
+            ...(clients ?? []),
+          ].map((c) => (
+            <Link
+              key={c.id || "todos"}
+              href={`/app/pagamentos?mes=${mesReferencia}${c.id ? `&cliente=${c.id}` : ""}`}
+              className={
+                filtroCliente === c.id
+                  ? "rounded-full bg-stamp-soft px-3 py-1 font-medium text-stamp"
+                  : "rounded-full border border-line px-3 py-1 text-ink-2 hover:bg-surface-2"
+              }
+            >
+              {c.nome}
+            </Link>
+          ))}
+        </div>
+      )}
 
       {tenantList.length === 0 && (
         <p className="text-sm text-ink-2">
@@ -283,6 +329,40 @@ export default async function PagamentosPage(props: {
                         Salvar
                       </button>
                     </form>
+
+                    <div className="mt-3 border-t border-line pt-3">
+                      <p className="mb-1 text-xs text-ink-2">
+                        Comprovante (Pix, depósito)
+                      </p>
+                      {comprovanteUrls.get(tenant.id) && payment && (
+                        <div className="mb-2 flex items-center gap-3 text-sm">
+                          <a
+                            href={comprovanteUrls.get(tenant.id)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-ink underline"
+                          >
+                            Ver comprovante
+                          </a>
+                          <form action={removeComprovante}>
+                            <input type="hidden" name="tenant_id" value={tenant.id} />
+                            <input type="hidden" name="mes_referencia" value={mesReferencia} />
+                            <input type="hidden" name="path" value={payment.comprovante_path ?? ""} />
+                            <ConfirmButton message="Remover este comprovante?" className="text-xs text-danger hover:underline">
+                              remover
+                            </ConfirmButton>
+                          </form>
+                        </div>
+                      )}
+                      <DirectUpload
+                        accountId={accountId}
+                        folder={`comprovantes/${tenant.id}`}
+                        action={registerComprovante}
+                        fields={{ tenant_id: tenant.id, mes_referencia: mesReferencia }}
+                        buttonLabel={payment?.comprovante_path ? "Trocar comprovante" : "Enviar comprovante"}
+                        accept="image/*,application/pdf"
+                      />
+                    </div>
                   </div>
                 );
               })}

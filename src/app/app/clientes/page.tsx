@@ -10,6 +10,7 @@ import {
   fmtDate,
 } from "@/lib/calc";
 import { addCliente, deleteCliente, saveRepasse } from "./actions";
+import { ConfirmButton } from "@/components/ConfirmButton";
 
 type Tenant = {
   id: string;
@@ -284,12 +285,7 @@ export default async function ClientesPage(props: {
                 </div>
                 <form action={deleteCliente}>
                   <input type="hidden" name="id" value={cliente.id} />
-                  <button
-                    type="submit"
-                    className="text-xs text-danger hover:underline"
-                  >
-                    excluir
-                  </button>
+                  <ConfirmButton message="Excluir este cliente? Os imóveis dele passam a ser seus (sem dono) e os repasses registrados são apagados." className="text-xs text-danger hover:underline">excluir</ConfirmButton>
                 </form>
               </div>
 

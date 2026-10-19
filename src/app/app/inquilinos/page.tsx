@@ -6,9 +6,12 @@ import {
   endTenant,
   addMorador,
   removeMorador,
-  uploadDocument,
+  registerDocument,
   deleteDocument,
 } from "./actions";
+import { ConfirmButton } from "@/components/ConfirmButton";
+import { DirectUpload } from "@/components/DirectUpload";
+import { EditContractForm } from "./EditContractForm";
 
 type Morador = { id: string; nome: string; telefone: string; email: string };
 type Documento = { id: string; nome: string; storage_path: string };
@@ -303,12 +306,7 @@ export default async function InquilinosPage() {
                           </span>
                           <form action={removeMorador}>
                             <input type="hidden" name="id" value={m.id} />
-                            <button
-                              type="submit"
-                              className="text-xs text-danger hover:underline"
-                            >
-                              remover
-                            </button>
+                            <ConfirmButton message="Remover este morador?" className="text-xs text-danger hover:underline">remover</ConfirmButton>
                           </form>
                         </li>
                       ))}
@@ -375,12 +373,7 @@ export default async function InquilinosPage() {
                                 name="storage_path"
                                 value={doc.storage_path}
                               />
-                              <button
-                                type="submit"
-                                className="text-xs text-danger hover:underline"
-                              >
-                                remover
-                              </button>
+                              <ConfirmButton message="Remover este documento? O arquivo será apagado." className="text-xs text-danger hover:underline">remover</ConfirmButton>
                             </form>
                           </li>
                         );
@@ -392,34 +385,22 @@ export default async function InquilinosPage() {
                       )}
                     </ul>
 
-                    <form
-                      action={uploadDocument}
-                      className="mt-2 flex flex-wrap items-center gap-2"
-                    >
-                      <input type="hidden" name="tenant_id" value={tenant.id} />
-                      <input
-                        name="file"
-                        type="file"
-                        required
-                        className="text-sm text-ink"
+                    <div className="mt-2">
+                      <DirectUpload
+                        accountId={accountId}
+                        folder={tenant.id}
+                        action={registerDocument}
+                        fields={{ tenant_id: tenant.id }}
+                        buttonLabel="Enviar documento"
                       />
-                      <button
-                        type="submit"
-                        className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface-2"
-                      >
-                        Enviar documento
-                      </button>
-                    </form>
+                    </div>
                   </div>
+
+                  <EditContractForm tenant={tenant} />
 
                   <form action={endTenant}>
                     <input type="hidden" name="id" value={tenant.id} />
-                    <button
-                      type="submit"
-                      className="text-xs text-danger hover:underline"
-                    >
-                      Encerrar contrato
-                    </button>
+                    <ConfirmButton message="Encerrar este contrato? Ele deixa de aparecer nos pagamentos do mês." className="text-xs text-danger hover:underline">Encerrar contrato</ConfirmButton>
                   </form>
                 </div>
               )}

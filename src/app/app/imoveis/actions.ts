@@ -78,3 +78,37 @@ export async function deleteUnit(formData: FormData) {
 
   revalidatePath("/app/imoveis");
 }
+
+export async function updateProperty(formData: FormData) {
+  const id = String(formData.get("id") || "");
+  const endereco = String(formData.get("endereco") || "").trim();
+  if (!id || !endereco) return;
+
+  const supabase = await createClient();
+
+  const { data: atual } = await supabase
+    .from("properties")
+    .select("endereco")
+    .eq("id", id)
+    .single();
+
+  const campos: Record<string, unknown> = { endereco };
+  if (formData.has("comissao_percent")) {
+    campos.comissao_percent = Number(formData.get("comissao_percent") || 0);
+  }
+  if (formData.has("client_id")) {
+    campos.client_id = String(formData.get("client_id") || "") || null;
+  }
+
+  // Endereço mudou: o ponto antigo no mapa deixa de valer, então localiza de novo.
+  if (atual && atual.endereco !== endereco) {
+    const local = await geocodeAddress(endereco);
+    campos.latitude = local?.lat ?? null;
+    campos.longitude = local?.lon ?? null;
+  }
+
+  await supabase.from("properties").update(campos).eq("id", id);
+
+  revalidatePath("/app/imoveis");
+  revalidatePath("/app");
+}

@@ -184,6 +184,34 @@ export default async function VisaoGeralPage() {
         </span>
       </div>
 
+      {propertyList.length === 0 && (
+        <div className="rounded-2xl border border-stamp/30 bg-stamp-soft p-5">
+          <h2 className="text-base font-semibold text-ink">
+            Vamos começar? São 3 passos
+          </h2>
+          <ol className="mt-3 flex flex-col gap-2 text-sm text-ink-2">
+            <li>
+              <Link href="/app/imoveis" className="font-medium text-stamp underline">
+                1. Cadastre o primeiro imóvel
+              </Link>{" "}
+              e as casas dentro dele.
+            </li>
+            <li>
+              <Link href="/app/inquilinos" className="font-medium text-stamp underline">
+                2. Crie o contrato
+              </Link>{" "}
+              com valor, vencimento e moradores.
+            </li>
+            <li>
+              <Link href="/app/pagamentos" className="font-medium text-stamp underline">
+                3. Registre os pagamentos
+              </Link>{" "}
+              e o sistema calcula multa e juros sozinho.
+            </li>
+          </ol>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <div className="rounded-2xl border border-line bg-surface p-4">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-stamp-soft text-stamp">

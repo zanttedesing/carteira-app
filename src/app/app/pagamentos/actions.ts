@@ -34,3 +34,55 @@ export async function savePayment(formData: FormData) {
 
   revalidatePath("/app/pagamentos");
 }
+
+export async function registerComprovante(formData: FormData) {
+  const tenantId = String(formData.get("tenant_id") || "");
+  const mesReferencia = String(formData.get("mes_referencia") || "");
+  const path = String(formData.get("path") || "");
+
+  const supabase = await createClient();
+  const accountId = await requireAccountId(supabase);
+
+  if (!tenantId || !mesReferencia || !path.startsWith(`${accountId}/`)) return;
+
+  const { data: atual } = await supabase
+    .from("payments")
+    .select("comprovante_path")
+    .eq("tenant_id", tenantId)
+    .eq("mes_referencia", mesReferencia)
+    .maybeSingle();
+
+  await supabase.from("payments").upsert(
+    {
+      account_id: accountId,
+      tenant_id: tenantId,
+      mes_referencia: mesReferencia,
+      comprovante_path: path,
+    },
+    { onConflict: "tenant_id,mes_referencia" }
+  );
+
+  if (atual?.comprovante_path && atual.comprovante_path !== path) {
+    await supabase.storage.from("documents").remove([atual.comprovante_path]);
+  }
+
+  revalidatePath("/app/pagamentos");
+}
+
+export async function removeComprovante(formData: FormData) {
+  const tenantId = String(formData.get("tenant_id") || "");
+  const mesReferencia = String(formData.get("mes_referencia") || "");
+  const path = String(formData.get("path") || "");
+  if (!tenantId || !mesReferencia) return;
+
+  const supabase = await createClient();
+
+  if (path) await supabase.storage.from("documents").remove([path]);
+  await supabase
+    .from("payments")
+    .update({ comprovante_path: null })
+    .eq("tenant_id", tenantId)
+    .eq("mes_referencia", mesReferencia);
+
+  revalidatePath("/app/pagamentos");
+}

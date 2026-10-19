@@ -9,6 +9,7 @@ import {
   updateItemStatus,
   deleteItem,
 } from "./actions";
+import { ConfirmButton } from "@/components/ConfirmButton";
 
 type Item = {
   id: string;
@@ -163,12 +164,7 @@ export default async function ManutencaoPage() {
                 </form>
                 <form action={deleteMaintenance}>
                   <input type="hidden" name="id" value={m.id} />
-                  <button
-                    type="submit"
-                    className="text-xs text-danger hover:underline"
-                  >
-                    excluir
-                  </button>
+                  <ConfirmButton message="Excluir esta manutenção e todos os itens dela? Isso não pode ser desfeito." className="text-xs text-danger hover:underline">excluir</ConfirmButton>
                 </form>
               </div>
             </div>
@@ -218,12 +214,7 @@ export default async function ManutencaoPage() {
                       </form>
                       <form action={deleteItem}>
                         <input type="hidden" name="id" value={item.id} />
-                        <button
-                          type="submit"
-                          className="text-xs text-danger hover:underline"
-                        >
-                          remover
-                        </button>
+                        <ConfirmButton message="Remover este item?" className="text-xs text-danger hover:underline">remover</ConfirmButton>
                       </form>
                     </span>
                   </li>

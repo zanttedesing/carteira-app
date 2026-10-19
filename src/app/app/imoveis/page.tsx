@@ -5,7 +5,9 @@ import {
   deleteProperty,
   createUnit,
   deleteUnit,
+  updateProperty,
 } from "./actions";
+import { ConfirmButton } from "@/components/ConfirmButton";
 
 type Unit = { id: string; label: string };
 type Property = {
@@ -167,14 +169,66 @@ export default async function ImoveisPage() {
                       )}
                       <form action={deleteProperty}>
                         <input type="hidden" name="id" value={p.id} />
-                        <button
-                          type="submit"
-                          className="text-xs text-danger hover:underline"
-                        >
-                          Excluir imóvel
-                        </button>
+                        <ConfirmButton message="Excluir este imóvel? Todas as casas, contratos e pagamentos dele serão apagados. Isso não pode ser desfeito." className="text-xs text-danger hover:underline">Excluir imóvel</ConfirmButton>
                       </form>
                     </div>
+
+                    <details className="mt-2 rounded-lg border border-line bg-surface">
+                      <summary className="cursor-pointer px-3 py-1.5 text-sm font-medium text-ink">
+                        Editar imóvel
+                      </summary>
+                      <form
+                        action={updateProperty}
+                        className="flex flex-wrap items-end gap-3 border-t border-line p-3"
+                      >
+                        <input type="hidden" name="id" value={p.id} />
+                        <label className="flex min-w-[220px] flex-1 flex-col gap-1 text-sm text-ink">
+                          Endereço
+                          <input
+                            name="endereco"
+                            required
+                            defaultValue={p.endereco}
+                            className="rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-stamp"
+                          />
+                        </label>
+                        {isProfissional && (
+                          <>
+                            <label className="flex flex-col gap-1 text-sm text-ink">
+                              Cliente dono
+                              <select
+                                name="client_id"
+                                defaultValue={p.client_id ?? ""}
+                                className="rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-stamp"
+                              >
+                                <option value="">Imóvel próprio</option>
+                                {(clients ?? []).map((c) => (
+                                  <option key={c.id} value={c.id}>
+                                    {c.nome}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label className="flex flex-col gap-1 text-sm text-ink">
+                              Comissão (%)
+                              <input
+                                name="comissao_percent"
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                defaultValue={p.comissao_percent}
+                                className="w-28 rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-stamp"
+                              />
+                            </label>
+                          </>
+                        )}
+                        <button
+                          type="submit"
+                          className="rounded-lg bg-stamp px-4 py-2 text-sm font-medium text-stamp-ink hover:bg-stamp/90"
+                        >
+                          Salvar
+                        </button>
+                      </form>
+                    </details>
 
                     <ul className="mt-2 flex flex-col gap-1">
                       {p.units.map((u) => (
@@ -185,12 +239,7 @@ export default async function ImoveisPage() {
                           {u.label}
                           <form action={deleteUnit}>
                             <input type="hidden" name="id" value={u.id} />
-                            <button
-                              type="submit"
-                              className="text-xs text-danger hover:underline"
-                            >
-                              remover
-                            </button>
+                            <ConfirmButton message="Remover esta casa? O contrato e os pagamentos dela serão apagados. Isso não pode ser desfeito." className="text-xs text-danger hover:underline">remover</ConfirmButton>
                           </form>
                         </li>
                       ))}

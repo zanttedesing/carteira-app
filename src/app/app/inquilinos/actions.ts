@@ -76,27 +76,22 @@ export async function removeMorador(formData: FormData) {
   revalidatePath("/app/inquilinos");
 }
 
-export async function uploadDocument(formData: FormData) {
+// O arquivo já foi enviado direto do navegador (DirectUpload); aqui só se
+// registra o caminho, conferindo que ele pertence à conta de quem pediu.
+export async function registerDocument(formData: FormData) {
   const tenantId = String(formData.get("tenant_id") || "");
-  const file = formData.get("file") as File | null;
-
-  if (!tenantId || !file || file.size === 0) return;
+  const path = String(formData.get("path") || "");
+  const nome = String(formData.get("nome") || "");
 
   const supabase = await createClient();
   const accountId = await requireAccountId(supabase);
 
-  const path = `${accountId}/${tenantId}/${Date.now()}-${file.name}`;
-
-  const { error: uploadError } = await supabase.storage
-    .from("documents")
-    .upload(path, file);
-
-  if (uploadError) return;
+  if (!tenantId || !path.startsWith(`${accountId}/`)) return;
 
   await supabase.from("documents").insert({
     account_id: accountId,
     tenant_id: tenantId,
-    nome: file.name,
+    nome,
     storage_path: path,
   });
 
@@ -116,4 +111,35 @@ export async function deleteDocument(formData: FormData) {
   await supabase.from("documents").delete().eq("id", id);
 
   revalidatePath("/app/inquilinos");
+}
+
+export async function updateTenant(formData: FormData) {
+  const id = String(formData.get("id") || "");
+  const dataInicio = String(formData.get("data_inicio") || "");
+  if (!id || !dataInicio) return;
+
+  const prazoIndeterminado = formData.get("prazo_indeterminado") === "on";
+
+  const supabase = await createClient();
+  await supabase
+    .from("tenants")
+    .update({
+      valor_aluguel: Number(formData.get("valor_aluguel") || 0),
+      dia_vencimento: Number(formData.get("dia_vencimento") || 10),
+      data_inicio: dataInicio,
+      data_fim: prazoIndeterminado
+        ? null
+        : String(formData.get("data_fim") || "") || null,
+      prazo_indeterminado: prazoIndeterminado,
+      multa_percent: Number(formData.get("multa_percent") || 0),
+      juros_mes_percent: Number(formData.get("juros_mes_percent") || 0),
+      indice_correcao: String(formData.get("indice_correcao") || "Nenhum"),
+      contrato_assinado: formData.get("contrato_assinado") === "on",
+      obs_contrato: String(formData.get("obs_contrato") || ""),
+    })
+    .eq("id", id);
+
+  revalidatePath("/app/inquilinos");
+  revalidatePath("/app/pagamentos");
+  revalidatePath("/app");
 }
