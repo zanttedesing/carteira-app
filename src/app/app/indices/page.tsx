@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAccountId } from "@/lib/account";
 import { fmtMesReferencia } from "@/lib/calc";
 import { addIndice, deleteIndice } from "./actions";
+import { ConfirmButton } from "@/components/ConfirmButton";
 
 type Indice = {
   id: string;
@@ -109,12 +110,12 @@ export default async function IndicesPage(props: {
                 <td className="px-4 py-2 text-right">
                   <form action={deleteIndice}>
                     <input type="hidden" name="id" value={i.id} />
-                    <button
-                      type="submit"
+                    <ConfirmButton
+                      message="Remover este valor do índice?"
                       className="text-xs text-danger hover:underline"
                     >
                       remover
-                    </button>
+                    </ConfirmButton>
                   </form>
                 </td>
               </tr>

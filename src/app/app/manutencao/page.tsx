@@ -109,7 +109,7 @@ export default async function ManutencaoPage() {
             <input name="data_prevista_fim" type="date" className={inputClass} />
           </label>
           <label className="flex flex-col gap-1 text-sm text-ink">
-            Custo total (R$)
+            Custo estimado (R$)
             <input
               name="custo"
               type="number"
@@ -172,7 +172,15 @@ export default async function ManutencaoPage() {
             <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm text-ink-2">
               <span>Solicitada em: {fmtDate(m.data_solicitacao)}</span>
               <span>Previsão: {fmtDate(m.data_prevista_fim)}</span>
-              <span>Custo total: {fmtMoney(m.custo)}</span>
+              <span>
+                Custo total:{" "}
+                {fmtMoney(
+                  m.maintenance_items.length > 0
+                    ? m.maintenance_items.reduce((soma, i) => soma + Number(i.custo), 0)
+                    : m.custo
+                )}
+                {m.maintenance_items.length > 0 ? " (soma dos itens)" : " (estimado)"}
+              </span>
             </div>
 
             <div className="mt-3">

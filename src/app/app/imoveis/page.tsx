@@ -9,7 +9,7 @@ import {
 } from "./actions";
 import { ConfirmButton } from "@/components/ConfirmButton";
 
-type Unit = { id: string; label: string };
+type Unit = { id: string; label: string; maintenance: { status: string }[] };
 type Property = {
   id: string;
   endereco: string;
@@ -28,7 +28,7 @@ export default async function ImoveisPage() {
       supabase
         .from("properties")
         .select(
-          "id, endereco, comissao_percent, client_id, clients(nome), units(id, label)"
+          "id, endereco, comissao_percent, client_id, clients(nome), units(id, label, maintenance(status))"
         )
         .order("created_at", { ascending: false }),
       supabase.from("clients").select("id, nome").order("nome"),
@@ -236,7 +236,14 @@ export default async function ImoveisPage() {
                           key={u.id}
                           className="flex items-center justify-between rounded-lg bg-surface px-3 py-1.5 text-sm text-ink"
                         >
-                          {u.label}
+                          <span className="flex items-center gap-2">
+                            {u.label}
+                            {u.maintenance.some((m) => m.status === "Em andamento") && (
+                              <span className="rounded-full bg-warn-soft px-2 py-0.5 text-xs font-medium text-warn">
+                                Em reforma
+                              </span>
+                            )}
+                          </span>
                           <form action={deleteUnit}>
                             <input type="hidden" name="id" value={u.id} />
                             <ConfirmButton message="Remover esta casa? O contrato e os pagamentos dela serão apagados. Isso não pode ser desfeito." className="text-xs text-danger hover:underline">remover</ConfirmButton>
