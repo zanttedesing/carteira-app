@@ -302,7 +302,14 @@ export default function Home() {
       <footer>
         <div className="wrap">
           <LogoLockup />
-          <span className="fine">Gestão de aluguéis, contratos e repasses.</span>
+          <nav className="links" aria-label="Links do rodapé">
+            <Link href="/termos">Termos de uso</Link>
+            <Link href="/privacidade">Privacidade</Link>
+            <Link href="/ajuda">Ajuda</Link>
+          </nav>
+          <span className="fine">
+            © 2026 ZantteBR · carteiradealuguel.com.br
+          </span>
         </div>
       </footer>
     </div>

@@ -33,8 +33,19 @@ const specialElite = Special_Elite({
 });
 
 export const metadata: Metadata = {
-  title: "Carteira de Aluguel",
-  description: "Gestão de imóveis, contratos e pagamentos de aluguel.",
+  metadataBase: new URL("https://carteiradealuguel.com.br"),
+  title: {
+    default: "Carteira de Aluguel — gestão de imóveis, contratos e repasses",
+    template: "%s | Carteira de Aluguel",
+  },
+  description:
+    "Sistema web para administradoras, corretores e proprietários: imóveis, inquilinos, pagamentos com multa e juros automáticos, comissão, repasses e reformas em um só lugar.",
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: "Carteira de Aluguel",
+    url: "/",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

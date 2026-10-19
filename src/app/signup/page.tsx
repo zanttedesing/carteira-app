@@ -79,6 +79,17 @@ export default async function SignupPage(props: {
             >
               {contaId ? "Entrar na carteira" : "Criar conta"}
             </button>
+            <p className="text-center text-xs text-ink-3">
+              Ao continuar, você concorda com os{" "}
+              <Link href="/termos" className="underline hover:text-ink-2">
+                Termos de uso
+              </Link>{" "}
+              e a{" "}
+              <Link href="/privacidade" className="underline hover:text-ink-2">
+                Política de privacidade
+              </Link>
+              .
+            </p>
           </form>
 
           <p className="mt-6 text-center text-sm text-ink-2">

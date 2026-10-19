@@ -46,6 +46,12 @@ export default async function LoginPage(props: {
               Senha
               <PasswordField name="senha" required className={inputClass} />
             </label>
+            <Link
+              href="/esqueci-senha"
+              className="-mt-2 self-end text-xs text-ink-2 underline hover:text-ink"
+            >
+              Esqueci minha senha
+            </Link>
             <button
               type="submit"
               className="mt-2 rounded-lg bg-stamp px-4 py-2 text-sm font-medium text-stamp-ink hover:bg-stamp/90"
